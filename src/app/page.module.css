@@ -1,11 +1,6 @@
 .page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
+  background: linear-gradient(to right, #6EDA78, #FFA200); 
+  min-height: 100vh;  
   display: grid;
   grid-template-rows: 20px 1fr 20px;
   align-items: center;
@@ -16,36 +11,12 @@
   font-family: var(--font-geist-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-  }
-}
-
 .main {
   display: flex;
   flex-direction: column;
   gap: 32px;
   grid-row-start: 2;
-}
-
-.main ol {
-  font-family: var(--font-geist-mono);
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
+  text-align: center;
 }
 
 .main code {
@@ -56,26 +27,36 @@
   font-weight: 600;
 }
 
-.ctas {
-  display: flex;
-  gap: 16px;
+.customButton {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  margin: 10px 10px;
+  padding: 0px 20px;
+  white-space: normal;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 300px;  
+  word-wrap: break-word; 
+  line-height: 3.5;
+  min-height: 130px;
+  border-radius: 0;
 }
 
-.ctas a {
-  appearance: none;
-  border-radius: 128px;
-  height: 48px;
-  padding: 0 20px;
-  border: none;
-  border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  line-height: 20px;
+.testTitle {
   font-weight: 500;
+}
+
+.breakText {
+  display: block; /* Forces text to go to a new line */
+  text-align: center;  /* Centers the text */
+}
+
+.customButton:hover {
+  background-color: #ececec !important;
+  color: black !important;
 }
 
 a.primary {
@@ -87,12 +68,6 @@ a.primary {
 a.secondary {
   border-color: var(--gray-alpha-200);
   min-width: 180px;
-}
-
-.footer {
-  grid-row-start: 3;
-  display: flex;
-  gap: 24px;
 }
 
 .footer a {
