@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { updateFormData, resetFormData, setErrors } from "../redux/formSlice";
+import { addNewFormData, updateFormData, resetFormData, setErrors } from "../redux/formSlice";
 import { RootState } from "../redux/store";
 import { Input, Select, DatePicker, Radio, Button, message } from "antd";
 import { FormState } from '../redux/formSlice';
@@ -61,16 +61,21 @@ const FormComponent = () => {
     if (!validateForm()) {
       return;
     }
-
-    const formDataToSubmit = { ...formValues };
+  
+    const formDataToSubmit = { ...formValues, id: Date.now().toString() }; // Add an ID for uniqueness
     localStorage.setItem("userFormData", JSON.stringify(formDataToSubmit));
-
-    console.log("Form data submitted:", formDataToSubmit);
-
-    dispatch(resetFormData()); // Reset form using Redux action
-
+  
+    // Dispatch action to add the form data to Redux store
+    dispatch(addNewFormData(formDataToSubmit));
+  
+    // console.log("Form data submitted:", formDataToSubmit);
+    console.log("Before reset:", JSON.stringify(formValues));
+    // Reset form values (optional, if you want to clear the form)
+    dispatch(resetFormData());
+  
     alert("Form submitted successfully!");
   };
+  
 
   const handleChange = (field: keyof FormState, value: any) => {
     // If the field is 'birthday', convert any Date object to an ISO string
