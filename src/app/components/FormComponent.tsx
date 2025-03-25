@@ -21,25 +21,25 @@ const FormComponent = () => {
     // Validate each field individually but stop on the first error
     if (!formValues.title || formValues.title === '') {
       newErrors.title = "Title is required!";
-    }if (!formValues.firstName || formValues.firstName === '') {
+    } if (!formValues.firstName || formValues.firstName === '') {
       newErrors.firstName = "First Name is required!";
-    }if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
+    } if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
       newErrors.firstName = "Please fill the real first name!";
-    }if (!formValues.lastName || formValues.lastName === '') {
+    } if (!formValues.lastName || formValues.lastName === '') {
       newErrors.lastName = "Last Name is required!";
-    }if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
+    } if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
       newErrors.lastName = "Please fill the real last name!";
-    }if (!formValues.birthday) {
+    } if (!formValues.birthday) {
       newErrors.birthday = "Birthday is required!";
-    }if (!formValues.nationality || formValues.nationality === '') {
+    } if (!formValues.nationality || formValues.nationality === '') {
       newErrors.nationality = "Nationality is required!";
-    }if (!formValues.gender || formValues.gender === '') {
+    } if (!formValues.gender || formValues.gender === '') {
       newErrors.gender = "Gender is required!";
-    }if (!formValues.phoneNumber || formValues.phoneNumber === '') {
+    } if (!formValues.phoneNumber || formValues.phoneNumber === '') {
       newErrors.phoneNumber = "Phone Number is required!";
-    }if (!/^\d+$/.test(formValues.phoneNumber)) {
+    } if (!/^\d+$/.test(formValues.phoneNumber)) {
       newErrors.phoneNumber = "Phone Number must be a valid number!";
-    }if (!formValues.expectedSalary || formValues.expectedSalary === '') {
+    } if (!formValues.expectedSalary || formValues.expectedSalary === '') {
       newErrors.expectedSalary = "Expected Salary is required!";
     }
 
@@ -58,16 +58,38 @@ const FormComponent = () => {
 
   // Handle form submission
   const handleSubmit = () => {
+    // Validate the form first
     if (!validateForm()) {
       return;
     }
 
+    // Get the form data to submit
     const formDataToSubmit = { ...formValues };
-    localStorage.setItem("userFormData", JSON.stringify(formDataToSubmit));
+
+    // Let's consider `citizenId` as the unique identifier (you can change it to passportNo if preferred)
+    const uniqueKey = formDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
+
+    // Get previously submitted data from localStorage
+    const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+
+    // Check if the unique key already exists in the stored data
+    const isDuplicate = previousData.some(
+      (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
+    );
+
+    if (isDuplicate) {
+      message.warning("This data has already been submitted!");
+      return; // Prevent submission
+    }
+
+    // If not a duplicate, proceed with submission
+    previousData.push(formDataToSubmit); // Add new data to the stored data
+    localStorage.setItem("submittedForms", JSON.stringify(previousData));
 
     console.log("Form data submitted:", formDataToSubmit);
 
-    dispatch(resetFormData()); // Reset form using Redux action
+    // Reset form after successful submission
+    dispatch(resetFormData());
 
     message.success("Form submitted successfully!");
   };

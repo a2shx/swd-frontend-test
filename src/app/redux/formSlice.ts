@@ -16,20 +16,6 @@ export interface FormState {
 
 }
 
-interface FormData {
-    title: string;
-    firstName: string;
-    lastName: string;
-    birthday: any;
-    nationality: string;
-    citizenId: string[];
-    gender: string;
-    countryCode: string;
-    phoneNumber: string;
-    passportNo: string;
-    expectedSalary: string;
-  }
-
 interface UpdateFormDataPayload {
     field: keyof FormState; // Ensures `field` is one of the keys in FormState
     value: any; // Value can be of any type
