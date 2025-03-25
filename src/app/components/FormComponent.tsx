@@ -20,26 +20,26 @@ const FormComponent = () => {
 
     // Validate each field individually but stop on the first error
     if (!formValues.title || formValues.title === '') {
-      newErrors.title = "Title is required!";}
-    if (!formValues.firstName || formValues.firstName === '') {
-      newErrors.firstName = "First Name is required!";}
-    if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
-      newErrors.firstName = "Please fill the real first name!";}
-    if (!formValues.lastName || formValues.lastName === '') {
-      newErrors.lastName = "Last Name is required!";}
-    if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
-      newErrors.lastName = "Please fill the real last name!";}
-    if (!formValues.birthday) {
-      newErrors.birthday = "Birthday is required!";}
-    if (!formValues.nationality || formValues.nationality === '') {
-      newErrors.nationality = "Nationality is required!";}
-    if (!formValues.gender || formValues.gender === '') {
-      newErrors.gender = "Gender is required!";}
-    if (!formValues.phoneNumber || formValues.phoneNumber === '') {
-      newErrors.phoneNumber = "Phone Number is required!";}
-    if (!/^\d+$/.test(formValues.phoneNumber)) {
-      newErrors.phoneNumber = "Phone Number must be a valid number!";}
-    if (!formValues.expectedSalary || formValues.expectedSalary === '') {
+      newErrors.title = "Title is required!";
+    }if (!formValues.firstName || formValues.firstName === '') {
+      newErrors.firstName = "First Name is required!";
+    }if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
+      newErrors.firstName = "Please fill the real first name!";
+    }if (!formValues.lastName || formValues.lastName === '') {
+      newErrors.lastName = "Last Name is required!";
+    }if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
+      newErrors.lastName = "Please fill the real last name!";
+    }if (!formValues.birthday) {
+      newErrors.birthday = "Birthday is required!";
+    }if (!formValues.nationality || formValues.nationality === '') {
+      newErrors.nationality = "Nationality is required!";
+    }if (!formValues.gender || formValues.gender === '') {
+      newErrors.gender = "Gender is required!";
+    }if (!formValues.phoneNumber || formValues.phoneNumber === '') {
+      newErrors.phoneNumber = "Phone Number is required!";
+    }if (!/^\d+$/.test(formValues.phoneNumber)) {
+      newErrors.phoneNumber = "Phone Number must be a valid number!";
+    }if (!formValues.expectedSalary || formValues.expectedSalary === '') {
       newErrors.expectedSalary = "Expected Salary is required!";
     }
 
@@ -69,7 +69,7 @@ const FormComponent = () => {
 
     dispatch(resetFormData()); // Reset form using Redux action
 
-    alert("Form submitted successfully!");
+    message.success("Form submitted successfully!");
   };
 
   const handleChange = (field: keyof FormState, value: any) => {

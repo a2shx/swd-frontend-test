@@ -13,7 +13,22 @@ export interface FormState {
   passportNo: string;
   expectedSalary: string;
   errors: Record<string, string>;
+
 }
+
+interface FormData {
+    title: string;
+    firstName: string;
+    lastName: string;
+    birthday: any;
+    nationality: string;
+    citizenId: string[];
+    gender: string;
+    countryCode: string;
+    phoneNumber: string;
+    passportNo: string;
+    expectedSalary: string;
+  }
 
 interface UpdateFormDataPayload {
     field: keyof FormState; // Ensures `field` is one of the keys in FormState
@@ -49,15 +64,22 @@ const formSlice = createSlice({
           state[field] = value;
         }
       },
+
     resetFormData: (state) => {
       Object.assign(state, initialState);
     },
+
     setErrors: (state, action: PayloadAction<Record<string, string>>) => {
       state.errors = action.payload; // Update errors in the state
     },
+  
   },
 });
 
-export const { updateFormData, resetFormData, setErrors } = formSlice.actions;
+export const { 
+    updateFormData, 
+    resetFormData, 
+    setErrors, 
+  } = formSlice.actions;
 
 export default formSlice.reducer;
