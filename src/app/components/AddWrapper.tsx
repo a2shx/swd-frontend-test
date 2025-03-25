@@ -4,6 +4,8 @@
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import { ReactNode } from "react";
+import FormComponent from "./FormComponent";  // Assuming you're using FormComponent
+// import TableComponent from "./TableComponent";  // Assuming you're using TableComponent
 
 const AppWrapper = ({ children }: { children: ReactNode }) => {
   return (
