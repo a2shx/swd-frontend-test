@@ -1,10 +1,15 @@
-import styles from '../page.module.css';  // Import as a module
+import FormComponent from "../components/FormComponent";
+import styles from "./test2.module.css";
+import AppWrapper from "../components/AddWrapper";
 
 export default function Test2() {
+
   return (
     <div className={styles.page}>
-      <h1>Test 1</h1>
-      <p>This is the content for Test 1.</p>
+      <h1 className={styles.title}>Form & Table</h1>
+      <AppWrapper>
+      <FormComponent/>
+      </AppWrapper>
     </div>
   );
 }

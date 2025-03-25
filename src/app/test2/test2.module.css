@@ -1,0 +1,17 @@
+.page {
+    background: linear-gradient(to right, #6EDA78, #FFA200); 
+    min-height: 100vh;  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100svh;
+    padding: 20px;
+    font-family: var(--font-geist-sans);
+}
+
+.title {
+  align-self: flex-start;
+  color: black;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
