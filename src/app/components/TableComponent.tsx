@@ -19,12 +19,11 @@ interface TableData {
 interface TableComponentProps {
   setFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Add setFormSubmitted here
   formSubmitted: boolean;
-  editingId: string | null;
   setEditingId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 
-const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormSubmitted, editingId, setEditingId }) => {
+const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormSubmitted, setEditingId }) => {
 
   const [data, setData] = useState<TableData[]>([]); // State to hold table data
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state

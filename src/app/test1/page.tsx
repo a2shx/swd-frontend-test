@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Row, Col, Button } from "antd";
 import styles from "./test1.module.css";
 import LanguageSwitcher from "../components/SwitchLanguage";
-import { useTranslation, UseTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 
 const initialShapes = [

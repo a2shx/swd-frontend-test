@@ -23,7 +23,6 @@ export default function Test2() {
       <TableComponent 
         formSubmitted={formSubmitted} 
         setFormSubmitted={setFormSubmitted} 
-        editingId={editingId}
         setEditingId={setEditingId} 
       />
       </AppWrapper>

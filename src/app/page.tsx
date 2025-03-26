@@ -3,7 +3,6 @@ import { Button } from 'antd';
 import Link from 'next/link';
 import styles from './page.module.css'; // your CSS file for page styles
 import LanguageSwitcher from './components/SwitchLanguage';
-import AppWrapper from './components/AddWrapper';
 import { useTranslation } from 'react-i18next';
 
 export default function Home() {
