@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, message, Popconfirm } from 'antd';
 import { TablePaginationConfig } from 'antd/es/table';
 import { Key } from 'antd/es/table/interface';
-// import useRenderData from './useRenderData';
+import { Checkbox } from "antd";
 
 interface TableData {
   key: string; // This key should be citizenId
@@ -17,12 +17,17 @@ interface TableData {
 interface TableComponentProps {
   setFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Add setFormSubmitted here
   formSubmitted: boolean;
+  editingId: string | null;
+  setEditingId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 
-const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormSubmitted }) => {
+const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormSubmitted, editingId, setEditingId }) => {
 
   const [data, setData] = useState<TableData[]>([]); // State to hold table data
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [pageSize, setPageSize] = useState(10); // Items per page state
 
   // Fetch initial data from localStorage on component mount
   useEffect(() => {
@@ -42,10 +47,14 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     }));
   };
 
-
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state
-  const [currentPage, setCurrentPage] = useState(1); // Current page state
-  const [pageSize, setPageSize] = useState(10); // Items per page state
+  const allRowKeys = data.map((item) => item.key);
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedRowKeys(allRowKeys); // Select all
+    } else {
+      setSelectedRowKeys([]); // Deselect all
+    }
+  };
 
   // Handle row selection change
   const handleSelectChange = (newSelectedRowKeys: Key[], selectedRows: TableData[]) => {
@@ -56,30 +65,37 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: handleSelectChange, // Handle selection changes
+    onChange: (keys: Key[]) => setSelectedRowKeys(keys),
   };
 
   const handleManage = (key: string) => {
-    message.info(`Manage action for row ${key}`);
+    setEditingId(key)
   };
 
   const handleBulkDelete = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('Please select at least one row to delete.');
+      message.warning("No records selected!");
       return;
     }
-
-    const remainingData = data.filter((item) => !selectedRowKeys.includes(item.key));
-    setData(remainingData);
-    setSelectedRowKeys([]); // Clear selected rows after delete
-    message.success('Selected rows have been deleted.');
+      const storedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+      const updatedData = storedData.filter(
+      (item: any) => !selectedRowKeys.includes(item.citizenId.join(""))
+    );
+    localStorage.setItem("submittedForms", JSON.stringify(updatedData));
+    setData(mapToTableData(updatedData));
+    setSelectedRowKeys([]); // Clear selection after deletion
+    message.success("Selected records deleted successfully!");
   };
 
   const handleDeleteItem = (key: string) => {
-    const remainingData = data.filter((item) => item.key !== key);
-    setData(remainingData);
-    message.success(`Row ${key} has been deleted.`);
+    const storedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+    const updatedData = storedData.filter((item: any) => item.citizenId.join("") !== key);
+    localStorage.setItem("submittedForms", JSON.stringify(updatedData));
+    setData(mapToTableData(updatedData));
+    setFormSubmitted(true);
+    message.success("Record deleted successfully!");
   };
+
 
   const handleChange = (pagination: any, filters: any, sorter: any) => {
     if (sorter.order) {
@@ -151,6 +167,12 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
 
   return (
     <div>
+      <div>
+      <Checkbox
+          onChange={(e) => handleSelectAll(e.target.checked)}
+          checked={selectedRowKeys.length === allRowKeys.length && allRowKeys.length > 0}
+        />
+        Select All
       <Button
         onClick={handleBulkDelete}
         disabled={selectedRowKeys.length === 0}
@@ -158,6 +180,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       >
         Delete Selected Items
       </Button>
+      </div>
 
       <Table
         rowKey="key" // Unique key for rows

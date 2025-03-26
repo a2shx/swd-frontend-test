@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';  // Add this import
 import { useDispatch, useSelector } from "react-redux";
 import { updateFormData, resetFormData, setErrors } from "../redux/formSlice";
 import { RootState } from "../redux/store";
@@ -11,9 +12,11 @@ const { Option } = Select;
 
 interface FormComponentProps {
   setFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  editingId: string | null;
+  setEditingId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted }) => {  
+const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editingId, setEditingId }) => {  
   const dispatch = useDispatch();
   const formValues = useSelector((state: RootState) => state.form);
   const errors = useSelector((state: RootState) => state.form.errors);
@@ -64,40 +67,98 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted }) => {
     if (!validateForm()) {
       return; // If validation fails, don't submit
     }
-
+  
     const formDataToSubmit = { ...formValues };
-
+  
     const cleanedFormDataToSubmit = {
       ...formDataToSubmit,
-      errors: {}, 
+      errors: {},
     };
-
+  
     const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
-
+  
     const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
-
-    const isDuplicate = previousData.some(
-      (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
-    );
-
-    if (isDuplicate) {
-      message.warning("This data has already been submitted!");
-      return; // Prevent submission
+  
+    if (editingId) {
+      // Edit existing record
+      const updatedData = previousData.map((data: any) => {
+        if (data.citizenId.join("") === editingId) {
+          return { ...data, ...cleanedFormDataToSubmit }; // Update existing record
+        }
+        return data;
+      });
+  
+      localStorage.setItem("submittedForms", JSON.stringify(updatedData)); // Update data in localStorage
+      message.success("Changes saved successfully!");
+  
+      // After updating, reset editingId (clear it to prevent always staying in edit mode)
+      dispatch(resetFormData());
+      setFormSubmitted(true);
+      setEditingId(null); // Reset editingId to null
+      alert("Changes saved successfully!");
+    } else {
+      // Check for duplicates when submitting a new record
+      const isDuplicate = previousData.some(
+        (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
+      );
+  
+      if (isDuplicate) {
+        message.warning("This data has already been submitted!");
+        return; // Prevent submission
+      }
+  
+      // If not a duplicate, proceed with adding new data
+      previousData.push(cleanedFormDataToSubmit); // Add new data to the stored data
+      localStorage.setItem("submittedForms", JSON.stringify(previousData));
+  
+      setFormSubmitted(true);
+      console.log("Form data submitted:", cleanedFormDataToSubmit);
+  
+      // Reset form after successful submission
+      dispatch(resetFormData());
+      alert("Form submitted successfully!");
     }
-
-    // If not a duplicate, proceed with submission
-    previousData.push(cleanedFormDataToSubmit); // Add new data to the stored data
-    localStorage.setItem("submittedForms", JSON.stringify(previousData));
-
-    setFormSubmitted(true);
-
-    console.log("Form data submitted:", cleanedFormDataToSubmit);
-
-    // Reset form after successful submission
-    dispatch(resetFormData());
-
-    alert("Form submitted successfully!");
   };
+
+
+  // const handleSubmit = () => {
+  //   if (!validateForm()) {
+  //     return; // If validation fails, don't submit
+  //   }
+
+  //   const formDataToSubmit = { ...formValues };
+
+  //   const cleanedFormDataToSubmit = {
+  //     ...formDataToSubmit,
+  //     errors: {}, 
+  //   };
+
+  //   const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
+
+  //   const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+
+  //   const isDuplicate = previousData.some(
+  //     (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
+  //   );
+
+  //   if (isDuplicate) {
+  //     message.warning("This data has already been submitted!");
+  //     return; // Prevent submission
+  //   }
+
+  //   // If not a duplicate, proceed with submission
+  //   previousData.push(cleanedFormDataToSubmit); // Add new data to the stored data
+  //   localStorage.setItem("submittedForms", JSON.stringify(previousData));
+
+  //   setFormSubmitted(true);
+
+  //   console.log("Form data submitted:", cleanedFormDataToSubmit);
+
+  //   // Reset form after successful submission
+  //   dispatch(resetFormData());
+
+  //   alert("Form submitted successfully!");
+  // };
   
 
 
@@ -109,6 +170,25 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted }) => {
     // Dispatch the updated form data
     dispatch(updateFormData({ field, value }));
   };
+
+    React.useEffect(() => {
+    if (editingId) {
+      const savedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+      const dataToEdit = savedData.find((item: any) => item.citizenId.join("") === editingId);
+      console.log('this from useEffect', editingId)
+      console.log('dataToEdit:', dataToEdit); // Add this log to check if the data is correct
+
+      if (dataToEdit) {
+        Object.keys(dataToEdit).forEach((field) => {
+          const value = dataToEdit[field as keyof typeof dataToEdit];
+          dispatch(updateFormData({ field: field as keyof FormState, value }));
+        });
+      }
+    } else {
+      dispatch(resetFormData()); // Reset form when no `editingId` is present
+    }
+  }, [editingId, dispatch]);
+
   /*
   ========================================================================
   JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART
