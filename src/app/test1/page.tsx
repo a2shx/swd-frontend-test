@@ -10,7 +10,11 @@ const initialShapes = [
 
 export default function Test1() {
   const [shapes, setShapes] = useState(initialShapes);
-
+/*
+  ========================================================================
+                            SHAPE MOVEMENT
+  ========================================================================
+*/
   const shiftLeft = () => {
     setShapes((prev) => [...prev.slice(1), prev[0]]);
   };
@@ -30,7 +34,11 @@ export default function Test1() {
     } while (shuffled.every((shape, index) => shape === shapes[index]));
     setShapes(shuffled);
   };
-
+/*
+  ========================================================================
+                                JSX PART
+  ========================================================================
+*/
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Layout & Style</h1>

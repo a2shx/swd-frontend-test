@@ -5,6 +5,7 @@ import { Table, Button, message, Popconfirm } from 'antd';
 import { TablePaginationConfig } from 'antd/es/table';
 import { Key } from 'antd/es/table/interface';
 import { Checkbox } from "antd";
+import styles from "./component.module.css";
 
 interface TableData {
   key: string; // This key should be citizenId
@@ -29,13 +30,22 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
   const [currentPage, setCurrentPage] = useState(1); // Current page state
   const [pageSize, setPageSize] = useState(10); // Items per page state
 
+  /*
+  ========================================================================
+                    RETRIEVE DATA FROM LOCAL STORAGE
+  ========================================================================
+  */
   // Fetch initial data from localStorage on component mount
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('submittedForms') || '[]');
     setData(mapToTableData(storedData));
     setFormSubmitted(false);
   }, [formSubmitted]); // listen for changes to localStorage
-
+  /*
+  ========================================================================
+                        MAP DATA TO TABLE FORMAT
+  ========================================================================
+  */
   // Map the data to match the table format
   const mapToTableData = (renderData: any[]) => {
     return renderData.map((item) => ({
@@ -46,7 +56,11 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       nationality: item.nationality,
     }));
   };
-
+  /*
+  ========================================================================
+                          SELECT ALL ITEM HANDLE
+  ========================================================================
+  */
   const allRowKeys = data.map((item) => item.key);
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -55,23 +69,28 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       setSelectedRowKeys([]); // Deselect all
     }
   };
-
-  // Handle row selection change
-  const handleSelectChange = (newSelectedRowKeys: Key[], selectedRows: TableData[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-    console.log("Selected Row Keys:", newSelectedRowKeys);
-    console.log("Selected Rows:", selectedRows);
-  };
-
+  /*
+  ========================================================================
+                          ROW SELECTION HANDLE
+  ========================================================================
+  */
   const rowSelection = {
     selectedRowKeys,
     onChange: (keys: Key[]) => setSelectedRowKeys(keys),
   };
-
+  /*
+  ========================================================================
+                            EDIT BUTTON HANDLE
+  ========================================================================
+  */
   const handleManage = (key: string) => {
     setEditingId(key)
   };
-
+  /*
+  ========================================================================
+                          DELETE BULK ITEMS HANDLE
+  ========================================================================
+  */
   const handleBulkDelete = () => {
     if (selectedRowKeys.length === 0) {
       message.warning("No records selected!");
@@ -86,7 +105,11 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     setSelectedRowKeys([]); // Clear selection after deletion
     message.success("Selected records deleted successfully!");
   };
-
+  /*
+  ========================================================================
+                          DELETE EACH ITEM HANDLE
+  ========================================================================
+  */
   const handleDeleteItem = (key: string) => {
     const storedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
     const updatedData = storedData.filter((item: any) => item.citizenId.join("") !== key);
@@ -95,8 +118,11 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     setFormSubmitted(true);
     message.success("Record deleted successfully!");
   };
-
-
+  /*
+  ========================================================================
+                          PAGINATION'S SORTING HANDLE
+  ========================================================================
+  */
   const handleChange = (pagination: any, filters: any, sorter: any) => {
     if (sorter.order) {
       const sortedData = [...data].sort((a, b) => {
@@ -109,7 +135,11 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       setData(sortedData);
     }
   };
-
+  /*
+  ========================================================================
+                              COLUMN ALIGNMENT PART
+  ========================================================================
+  */
   const columns = [
     {
       title: 'Name',
@@ -139,12 +169,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       title: 'Manage',
       render: (_: any, record: TableData) => (
         <span>
-          <a
-            onClick={() => handleManage(record.key)}
-            style={{ marginRight: 10, color: '#1890ff', cursor: 'pointer' }}
-          >
-            Edit
-          </a>
+          <a onClick={() => handleManage(record.key)}>Edit</a>
           
           <Popconfirm
             title="Are you sure to delete this item?"
@@ -152,32 +177,55 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
             okText="Yes"
             cancelText="No"
           >
-            <a style={{ color: '#ff4d4f', cursor: 'pointer' }}>Delete</a>
+            <a>Delete</a>
           </Popconfirm>
       </span>
       ),
       width: '20%',
     },
   ];
-
+  /*
+  ========================================================================
+                            PAGINATION CONFIG PART
+  ========================================================================
+  */
   const paginationConfig: TablePaginationConfig = {
     current: currentPage,
     pageSize,
     total: data.length,
     onChange: (page: number) => setCurrentPage(page),
-    showSizeChanger: true,
     onShowSizeChange: (current: number, size: number) => setPageSize(size),
+    position: ['topRight'], // If you want pagination at the top
+    itemRender: (current, type, originalElement) => {
+      if (type === 'prev') {
+        return <a>PREV</a>; // Change 'prev' arrow to 'PREV' text
+      }
+      if (type === 'next') {
+        return <a>NEXT</a>; // Change 'next' arrow to 'NEXT' text
+      }
+      return originalElement; // Default rendering for page numbers
+    }
   };
-
+  /*
+  ========================================================================
+                                  JSX PART
+  ========================================================================
+  */
   return (
-    <div>
+    <div className={styles.tableStyle}>
       <div>
+{/* 
+  ========================================================================
+                    SELECT ALL & DELETE SELECTED PART
+  ========================================================================
+ */}
       <Checkbox
           onChange={(e) => handleSelectAll(e.target.checked)}
           checked={selectedRowKeys.length === allRowKeys.length && allRowKeys.length > 0}
         />
+        <span className={styles.selectAllLabel}>
         Select All
-
+        </span>
       <Button
         onClick={handleBulkDelete}
         disabled={selectedRowKeys.length === 0}
@@ -186,23 +234,17 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
         Delete
       </Button>
       </div>
-
+{/* 
+  ========================================================================
+                              TABLE PART
+  ========================================================================
+ */}
       <Table
+        
         rowKey="key" // Unique key for rows
         columns={columns}
         dataSource={data}
-        pagination={{
-          position: ['topRight'], // If you want pagination at the top
-          itemRender: (current, type, originalElement) => {
-            if (type === 'prev') {
-              return <a>PREV</a>; // Change 'prev' arrow to 'PREV' text
-            }
-            if (type === 'next') {
-              return <a>NEXT</a>; // Change 'next' arrow to 'NEXT' text
-            }
-            return originalElement; // Default rendering for page numbers
-          },
-        }}
+        pagination={paginationConfig}
         onChange={handleChange} // Handle sorting and pagination changes
         rowSelection={rowSelection}
         sortDirections={['ascend', 'descend']} // Available sort directions
