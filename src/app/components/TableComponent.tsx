@@ -6,6 +6,7 @@ import { TablePaginationConfig } from 'antd/es/table';
 import { Key } from 'antd/es/table/interface';
 import { Checkbox } from "antd";
 import styles from "./component.module.css";
+import { useTranslation } from 'react-i18next';
 
 interface TableData {
   key: string; // This key should be citizenId
@@ -29,6 +30,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state
   const [currentPage, setCurrentPage] = useState(1); // Current page state
   const [pageSize, setPageSize] = useState(10); // Items per page state
+  const { t } = useTranslation();
 
   /*
   ========================================================================
@@ -142,34 +144,40 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
   */
   const columns = [
     {
-      title: 'Name',
+      title: t('Name'),
       dataIndex: 'name',
       sorter: true,  // Enable sorting
       render: (text: string) => <span>{text}</span>,
     },
     {
-      title: 'Gender',
+      title: t('Gender'),
       dataIndex: 'gender',
       sorter: true,  // Enable sorting
-      render: (text: string) => <span>{text}</span>,
+      render: (text: string) => {
+        // Translate gender values (example: Male -> ผู้ชาย, Female -> ผู้หญิง)
+        return <span>{t(`gender.${text.toLowerCase()}`)}</span>;
+      },
     },
     {
-      title: 'Mobile Phone',
+      title: t('Mobile Phone'),
       dataIndex: 'mobilePhone',
       sorter: true,  // Enable sorting
       render: (text: string) => <span>{text}</span>,
     },
     {
-      title: 'Nationality',
+      title: t('Nationality'),
       dataIndex: 'nationality',
       sorter: true,  // Enable sorting
-      render: (text: string) => <span>{text}</span>,
+      render: (text: string) => {
+        // Translate nationality values (example: Thailand -> ไทย)
+        return <span>{t(`nationality.${text.toLowerCase()}`)}</span>;
+      },
     },
     {
-      title: 'Manage',
+      title: t('Manage'),
       render: (_: any, record: TableData) => (
         <span>
-          <a onClick={() => handleManage(record.key)}>Edit</a>
+          <a onClick={() => handleManage(record.key)}>{t("Edit")}</a>
           
           <Popconfirm
             title="Are you sure to delete this item?"
@@ -177,7 +185,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
             okText="Yes"
             cancelText="No"
           >
-            <a>Delete</a>
+            <a className={styles.manageStyle}>{t("Delete")}</a>
           </Popconfirm>
       </span>
       ),
@@ -198,10 +206,10 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     position: ['topRight'], // If you want pagination at the top
     itemRender: (current, type, originalElement) => {
       if (type === 'prev') {
-        return <a>PREV</a>; // Change 'prev' arrow to 'PREV' text
+        return <a>{t("PREV")}</a>; // Change 'prev' arrow to 'PREV' text
       }
       if (type === 'next') {
-        return <a>NEXT</a>; // Change 'next' arrow to 'NEXT' text
+        return <a>{t("NEXT")}</a>; // Change 'next' arrow to 'NEXT' text
       }
       return originalElement; // Default rendering for page numbers
     }
@@ -224,14 +232,14 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
           checked={selectedRowKeys.length === allRowKeys.length && allRowKeys.length > 0}
         />
         <span className={styles.selectAllLabel}>
-        Select All
+        {t("Select All")}
         </span>
       <Button
         onClick={handleBulkDelete}
         disabled={selectedRowKeys.length === 0}
         style={{ marginTop: '20px' }}
       >
-        Delete
+        {t("Delete")}
       </Button>
       </div>
 {/* 

@@ -1,10 +1,7 @@
-// src/app/layout.tsx
-import { ReactNode } from "react";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./i18n";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

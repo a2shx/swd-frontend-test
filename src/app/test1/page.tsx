@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { Row, Col, Button } from "antd";
 import styles from "./test1.module.css";
+import LanguageSwitcher from "../components/SwitchLanguage";
+import { useTranslation, UseTranslation } from "next-i18next";
+import Link from "next/link";
 
 const initialShapes = [
   "square", "circle", "oval",
@@ -10,6 +13,7 @@ const initialShapes = [
 
 export default function Test1() {
   const [shapes, setShapes] = useState(initialShapes);
+  const { t } = useTranslation();
 /*
   ========================================================================
                             SHAPE MOVEMENT
@@ -41,8 +45,16 @@ export default function Test1() {
 */
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Layout & Style</h1>
-
+      
+      <h1 className={styles.title}>{t("Layout & Style")}</h1>
+      <div>
+        <LanguageSwitcher/>
+        <Link href="/">
+            <Button className={styles.customButton}>
+              {t("Home")}
+            </Button>
+          </Link>
+      </div>
       <Row justify="center" className={styles.row1}>
         <Col>
           <Button className={styles.controlButton} onClick={shiftLeft}>
@@ -56,13 +68,13 @@ export default function Test1() {
               <div className={styles.triangleUp}></div>
               <div className={styles.triangleDown}></div>
             </div>
-            <span className={styles.spanLabel}>Move Position</span>
+            <span className={styles.spanLabel}>{t("Move Position")}</span>
           </Button>
         </Col>
         <Col>
           <Button className={styles.controlButton} onClick={shiftRight}>
             <div className={styles.triangleRight}></div>
-            <span className={styles.spanLabel}>Move Shape</span>
+            <span className={styles.spanLabel}>{t("Move Shape")}</span>
           </Button>
         </Col>
       </Row>

@@ -8,6 +8,9 @@ import { Input, Select, DatePicker, Radio, Button, message } from "antd";
 import { FormState } from '../redux/formSlice';
 import dayjs from 'dayjs';
 import styles from "./component.module.css";
+import LanguageSwitcher from './SwitchLanguage';
+import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 
 const { Option } = Select;
 
@@ -21,6 +24,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   const dispatch = useDispatch();
   const formValues = useSelector((state: RootState) => state.form);
   const errors = useSelector((state: RootState) => state.form.errors);
+  const { t } = useTranslation();
  /*
   ========================================================================
                       VALIDATION OF EACH FIELD PART
@@ -168,22 +172,30 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   */
   return (
     <div className={styles.formStyle}>
+      <div>
+        <LanguageSwitcher/>
+        <Link href="/">
+              <Button className={styles.customButton}>
+                {t("Home")}
+              </Button>
+        </Link>
+      </div>
       <div className={styles.firstRow}>
         {/* 
         ===================================================================
                             TITLE INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Title:</label>
+        <label><span className={styles.redFont}>*</span> {t("Title")}:</label>
         <Select
           value={formValues.title || undefined}  // Ensures placeholder is visible if no value is selected
-          placeholder="Title"      
+          placeholder={t("Title" )}     
           onChange={(value) => handleChange("title", value)}
           className={styles.title}
         >
-          <Option value="Mr">Mr.</Option>
-          <Option value="Mrs">Mrs.</Option>
-          <Option value="Ms">Ms.</Option>
+          <Option value="Mr">{t("Mr.")}</Option>
+          <Option value="Mrs">{t("Mrs.")}</Option>
+          <Option value="Ms">{t("Ms.")}</Option>
         </Select>
         {errors.title && <div className={styles.redFont}>{errors.title}</div>}
         {/* 
@@ -191,10 +203,10 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             FIRST NAME INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Firstname:</label>
+        <label><span className={styles.redFont}>*</span> {t("Firstname")}:</label>
         <Input
           value={formValues.firstName}
-          placeholder="First Name"
+          placeholder={t("First Name")}
           onChange={(e) => handleChange("firstName", e.target.value)}
         />
         {errors.firstName && <div className={styles.redFont}>{errors.firstName}</div>}
@@ -203,10 +215,10 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             LAST NAME INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Lastname:</label>
+        <label><span className={styles.redFont}>*</span> {t("Lastname")}:</label>
         <Input
           value={formValues.lastName}
-          placeholder="Last Name"
+          placeholder={t("Last Name")}
           onChange={(e) => handleChange("lastName", e.target.value)}
         />
         {errors.lastName && <div className={styles.redFont}>{errors.lastName}</div>}
@@ -218,7 +230,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             BIRTHDAY INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Birthday:</label>
+        <label><span className={styles.redFont}>*</span> {t("Birthday")}:</label>
         <DatePicker
           value={formValues.birthday ? dayjs(formValues.birthday) : null} // Convert ISO string to dayjs object for display
           onChange={(date) => {
@@ -226,6 +238,8 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
               handleChange('birthday', date.toISOString()); // Convert Date (dayjs) to ISO string on change
             }
           }}
+          format="MM/DD/YY"
+          placeholder={t("mm/dd/yy")} // Using translation for placeholder
         />
         {errors.birthday && <div className={styles.redFont}>{errors.birthday}</div>}
         {/* 
@@ -233,16 +247,16 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             NATIONALITY INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Nationality:</label>
+        <label><span className={styles.redFont}>*</span> {t("Nationality")}:</label>
         <Select
           value={formValues.nationality  || undefined}
-          placeholder="Please Select"
+          placeholder={t("Please Select")}
           onChange={(value) => handleChange("nationality", value)}
           className={styles.nationality}
         >
-          <Option value="Thai">Thai</Option>
-          <Option value="French">French</Option>
-          <Option value="American">American</Option>
+          <Option value="Thai">{t("Thai")}</Option>
+          <Option value="French">{t("French")}</Option>
+          <Option value="American">{t("American")}</Option>
         </Select>
         {errors.nationality && <div className={styles.redFont}>{errors.nationality}</div>}
       </div>
@@ -253,7 +267,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             CITIZEN ID INPUT FIELD
         ===================================================================
         */}
-        <label>Citizen ID:</label>
+        <label>{t("Citizen ID")}:</label>
         <div style={{ display: "flex", gap: "5px" }}>
           {formValues.citizenId.map((_, index) => (
              <React.Fragment key={index}>
@@ -293,14 +307,14 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             GENDER INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Gender:</label>
+        <label><span className={styles.redFont}>*</span> {t("Gender")}:</label>
         <Radio.Group
           value={formValues.gender}
           onChange={(e) => handleChange("gender", e.target.value)}
         >
-          <Radio value="Male">Male</Radio>
-          <Radio value="Female">Female</Radio>
-          <Radio value="Unisex">Unisex</Radio>
+          <Radio value="Male">{t("Male")}</Radio>
+          <Radio value="Female">{t("Female")}</Radio>
+          <Radio value="Unisex">{t("Unisex")}</Radio>
         </Radio.Group>
         {errors.gender && <div className={styles.redFont}>{errors.gender}</div>}
       </div>
@@ -311,7 +325,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
                             MOBILE PHONE INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> Mobile Phone:</label>
+        <label><span className={styles.redFont}>*</span> {t("Mobile Phone")}:</label>
         <div className={styles.phoneField}>
           <Select
             className={styles.countryCode}
@@ -326,7 +340,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
           <span className={styles.dashsign}> - </span>
           <Input
             value={formValues.phoneNumber}
-            placeholder="Phone Number"
+            placeholder={t("Phone Number")}
             maxLength={10}
             onChange={(e) => handleChange("phoneNumber", e.target.value)}
           />
@@ -341,10 +355,10 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
         ===================================================================
         */}
         <div className={styles.passport}>
-          <label>Passport No:</label>
+          <label>{t("Passport No")}:</label>
           <Input
             value={formValues.passportNo}
-            placeholder="Passport Number"
+            placeholder={t("Passport Number")}
             onChange={(e) => handleChange("passportNo", e.target.value)}
           />
         </div>
@@ -357,10 +371,10 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
         ===================================================================
         */}
         <div className={styles.expectedSalary}>
-          <label><span className={styles.redFont}>*</span> Expected Salary:</label>
+          <label><span className={styles.redFont}>*</span> {t("Expected Salary")}:</label>
           <Input
             value={formValues.expectedSalary}
-            placeholder="Expected Salary"
+            placeholder={t("Expected Salary")}
             onChange={(e) => handleChange("expectedSalary", e.target.value)}
           />
         </div>
@@ -371,9 +385,9 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
         ===================================================================
         */}
         <div className={styles.buttonStyle}>
-          <Button onClick={() => dispatch(resetFormData())}>RESET</Button>
+          <Button onClick={() => dispatch(resetFormData())}>{t("RESET")}</Button>
           <Button onClick={handleSubmit}>
-            SUBMIT
+            {t("SUBMIT")}
           </Button>
         </div>
       </div>
