@@ -139,18 +139,22 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       title: 'Manage',
       render: (_: any, record: TableData) => (
         <span>
-          <Button onClick={() => handleManage(record.key)} type="primary" style={{ marginRight: 10 }}>
+          <a
+            onClick={() => handleManage(record.key)}
+            style={{ marginRight: 10, color: '#1890ff', cursor: 'pointer' }}
+          >
             Edit
-          </Button>
+          </a>
+          
           <Popconfirm
             title="Are you sure to delete this item?"
             onConfirm={() => handleDeleteItem(record.key)}
             okText="Yes"
             cancelText="No"
           >
-            <Button>Delete</Button>
+            <a style={{ color: '#ff4d4f', cursor: 'pointer' }}>Delete</a>
           </Popconfirm>
-        </span>
+      </span>
       ),
       width: '20%',
     },
@@ -173,12 +177,13 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
           checked={selectedRowKeys.length === allRowKeys.length && allRowKeys.length > 0}
         />
         Select All
+
       <Button
         onClick={handleBulkDelete}
         disabled={selectedRowKeys.length === 0}
-        style={{ marginBottom: '20px' }}
+        style={{ marginTop: '20px' }}
       >
-        Delete Selected Items
+        Delete
       </Button>
       </div>
 
@@ -186,7 +191,18 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
         rowKey="key" // Unique key for rows
         columns={columns}
         dataSource={data}
-        pagination={paginationConfig}
+        pagination={{
+          position: ['topRight'], // If you want pagination at the top
+          itemRender: (current, type, originalElement) => {
+            if (type === 'prev') {
+              return <a>PREV</a>; // Change 'prev' arrow to 'PREV' text
+            }
+            if (type === 'next') {
+              return <a>NEXT</a>; // Change 'next' arrow to 'NEXT' text
+            }
+            return originalElement; // Default rendering for page numbers
+          },
+        }}
         onChange={handleChange} // Handle sorting and pagination changes
         rowSelection={rowSelection}
         sortDirections={['ascend', 'descend']} // Available sort directions

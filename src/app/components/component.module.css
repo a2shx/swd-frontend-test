@@ -1,0 +1,71 @@
+/* 
+======================================================================
+                            FORM COMPONENT STYLES
+======================================================================
+*/
+.firstRow, .secondRow, .thirdRow, .fourthRow, .fifthRow, .sixthRow, .seventhRow {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* Vertically aligns items */
+    margin-bottom: 20px;
+  }
+
+  .firstRow label, .secondRow label, .thirdRow label, .fourthRow label, .fifthRow label, .sixthRow label, .seventhRow label {
+    margin-right: 5px; /* Add spacing between label and input */
+    white-space: nowrap; /* Prevent line break in label */
+    color: black;
+  }
+
+  .redFont{
+    color: red;
+  }
+  .dashsign{
+    align-self: center;
+    color: black;
+    margin:0px 10px;
+  }
+
+  .formStyle{
+    padding: 10px 15px;
+    border: 2px solid rgb(109, 109, 109);
+    border-radius: 10px;
+  }
+  
+  .title{
+    width: 40%;
+  }
+  .phoneField{
+    display: flex;
+    width: 50%;
+  }
+
+  .countryCode{
+    width: 50%;
+  }
+
+  .passport{
+    display: flex;
+    align-items: center;
+    width: 50%;
+  }
+
+  .buttonStyle{
+    display: flex;
+  }
+  .buttonStyle button{
+    margin-left: 60%;
+  }
+  .expectedSalary{
+    display: flex;
+    align-items: center;
+    width: 50%;
+  }
+  .nationality{
+    width: 30%;
+  }
+
+  /* 
+======================================================================
+                            TABLE COMPONENT STYLES
+======================================================================
+*/

@@ -7,6 +7,7 @@ import { RootState } from "../redux/store";
 import { Input, Select, DatePicker, Radio, Button, message } from "antd";
 import { FormState } from '../redux/formSlice';
 import dayjs from 'dayjs';
+import styles from "./component.module.css";
 
 const { Option } = Select;
 
@@ -20,8 +21,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   const dispatch = useDispatch();
   const formValues = useSelector((state: RootState) => state.form);
   const errors = useSelector((state: RootState) => state.form.errors);
-
-  // Validation function
+ /*
+  ========================================================================
+                      VALIDATION OF EACH FIELD PART
+  ========================================================================
+  */
   const validateForm = () => {
     const newErrors: any = {};
 
@@ -62,21 +66,23 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
 
     return Object.keys(newErrors).length === 0;
   };
-
+ /*
+  ========================================================================
+            HANDLE SUBMIT BUTTON (BOTH ADD NEW AND EDIT SUBMIT)
+  ========================================================================
+  */
   const handleSubmit = () => {
     if (!validateForm()) {
       return; // If validation fails, don't submit
     }
   
     const formDataToSubmit = { ...formValues };
-  
     const cleanedFormDataToSubmit = {
       ...formDataToSubmit,
       errors: {},
     };
   
     const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
-  
     const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
   
     if (editingId) {
@@ -119,49 +125,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
       alert("Form submitted successfully!");
     }
   };
-
-
-  // const handleSubmit = () => {
-  //   if (!validateForm()) {
-  //     return; // If validation fails, don't submit
-  //   }
-
-  //   const formDataToSubmit = { ...formValues };
-
-  //   const cleanedFormDataToSubmit = {
-  //     ...formDataToSubmit,
-  //     errors: {}, 
-  //   };
-
-  //   const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
-
-  //   const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
-
-  //   const isDuplicate = previousData.some(
-  //     (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
-  //   );
-
-  //   if (isDuplicate) {
-  //     message.warning("This data has already been submitted!");
-  //     return; // Prevent submission
-  //   }
-
-  //   // If not a duplicate, proceed with submission
-  //   previousData.push(cleanedFormDataToSubmit); // Add new data to the stored data
-  //   localStorage.setItem("submittedForms", JSON.stringify(previousData));
-
-  //   setFormSubmitted(true);
-
-  //   console.log("Form data submitted:", cleanedFormDataToSubmit);
-
-  //   // Reset form after successful submission
-  //   dispatch(resetFormData());
-
-  //   alert("Form submitted successfully!");
-  // };
-  
-
-
+ /*
+  ========================================================================
+              HANDLE CHANGE OF BIRTHDAY INPUT FIELD
+  ========================================================================
+  */
   const handleChange = (field: keyof FormState, value: any) => {
     // If the field is 'birthday', convert any Date object to an ISO string
     if (field === 'birthday' && value instanceof Date) {
@@ -170,7 +138,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
     // Dispatch the updated form data
     dispatch(updateFormData({ field, value }));
   };
-
+ /*
+  ========================================================================
+              HANDLE UPDATE DATA ON LOCAL STORAGE PART
+  ========================================================================
+  */
     React.useEffect(() => {
     if (editingId) {
       const savedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
@@ -191,41 +163,62 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
 
   /*
   ========================================================================
-  JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART
+                                JSX PART
   ========================================================================
   */
   return (
-    <div style={{ maxWidth: 500, margin: "0 auto" }}>
-      <div>
-        <label>Title *</label>
+    <div className={styles.formStyle}>
+      <div className={styles.firstRow}>
+        {/* 
+        ===================================================================
+                            TITLE INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Title:</label>
         <Select
-          value={formValues.title}
+          value={formValues.title || undefined}  // Ensures placeholder is visible if no value is selected
+          placeholder="Title"      
           onChange={(value) => handleChange("title", value)}
-          style={{ width: "100%" }}
+          className={styles.title}
         >
           <Option value="Mr">Mr.</Option>
           <Option value="Mrs">Mrs.</Option>
           <Option value="Ms">Ms.</Option>
         </Select>
-        {errors.title && <div style={{ color: 'red' }}>{errors.title}</div>}
-
-        <label>First Name *</label>
+        {errors.title && <div className={styles.redFont}>{errors.title}</div>}
+        {/* 
+        ===================================================================
+                            FIRST NAME INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Firstname:</label>
         <Input
           value={formValues.firstName}
+          placeholder="First Name"
           onChange={(e) => handleChange("firstName", e.target.value)}
         />
-        {errors.firstName && <div style={{ color: 'red' }}>{errors.firstName}</div>}
-
-        <label>Last Name *</label>
+        {errors.firstName && <div className={styles.redFont}>{errors.firstName}</div>}
+        {/* 
+        ===================================================================
+                            LAST NAME INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Lastname:</label>
         <Input
           value={formValues.lastName}
+          placeholder="Last Name"
           onChange={(e) => handleChange("lastName", e.target.value)}
         />
-        {errors.lastName && <div style={{ color: 'red' }}>{errors.lastName}</div>}
+        {errors.lastName && <div className={styles.redFont}>{errors.lastName}</div>}
       </div>
 
-      <div>
-        <label>Birthday *</label>
+      <div className={styles.secondRow}>
+        {/* 
+        ===================================================================
+                            BIRTHDAY INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Birthday:</label>
         <DatePicker
           value={formValues.birthday ? dayjs(formValues.birthday) : null} // Convert ISO string to dayjs object for display
           onChange={(date) => {
@@ -234,44 +227,73 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
             }
           }}
         />
-        {errors.birthday && <div style={{ color: 'red' }}>{errors.birthday}</div>}
-
-        <label>Nationality *</label>
+        {errors.birthday && <div className={styles.redFont}>{errors.birthday}</div>}
+        {/* 
+        ===================================================================
+                            NATIONALITY INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Nationality:</label>
         <Select
-          value={formValues.nationality}
+          value={formValues.nationality  || undefined}
+          placeholder="Please Select"
           onChange={(value) => handleChange("nationality", value)}
-          style={{ width: "100%" }}
+          className={styles.nationality}
         >
           <Option value="Thai">Thai</Option>
           <Option value="French">French</Option>
           <Option value="American">American</Option>
         </Select>
-        {errors.nationality && <div style={{ color: 'red' }}>{errors.nationality}</div>}
+        {errors.nationality && <div className={styles.redFont}>{errors.nationality}</div>}
       </div>
 
-      <div>
-        <label>Citizen ID</label>
+      <div className={styles.thirdRow}>
+        {/* 
+        ===================================================================
+                            CITIZEN ID INPUT FIELD
+        ===================================================================
+        */}
+        <label>Citizen ID:</label>
         <div style={{ display: "flex", gap: "5px" }}>
           {formValues.citizenId.map((_, index) => (
-            <Input
-              key={index}
-              maxLength={index === 0 ? 1 : index === 1 ? 4 : index === 2 ? 5 : index === 3 ? 2 : 1}
-              value={formValues.citizenId[index]}
-              placeholder={`Part ${index + 1}`}
-              onChange={(e) => {
-                const newCitizenId = [...formValues.citizenId];
-                newCitizenId[index] = e.target.value;
-                handleChange("citizenId", newCitizenId);
-              }}
-              style={{ width: index === 0 ? "10%" : index === 3 ? "15%" : "20%" }}
-            />
+             <React.Fragment key={index}>
+              <Input
+                value={formValues.citizenId[index]}
+                maxLength={
+                  index === 0 ? 1 :
+                  index === 1 ? 4 :
+                  index === 2 ? 5 :
+                  index === 3 ? 2 : 1
+                }
+                placeholder={["X", "XXXX", "XXXXX", "XX", "X"][index]}
+                onChange={(e) => {
+                  const newCitizenId = [...formValues.citizenId];
+                  newCitizenId[index] = e.target.value;
+                  handleChange("citizenId", newCitizenId);
+                }}
+                style={{
+                  width: index === 0 ? "10%" :
+                          index === 1 ? "20%" :
+                          index === 2 ? "20%" :
+                          index === 3 ? "15%" : "10%"
+                }}
+              />
+              {index < formValues.citizenId.length - 1 && (
+                <span className={styles.dashsign}> - </span>
+              )}
+            </React.Fragment>
           ))}
         </div>
-        {errors.citizenId && <div style={{ color: 'red' }}>{errors.citizenId}</div>}
+        {errors.citizenId && <div className={styles.redFont}>{errors.citizenId}</div>}
       </div>
 
-      <div>
-        <label>Gender *</label>
+      <div className={styles.fourthRow}>
+        {/* 
+        ===================================================================
+                            GENDER INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Gender:</label>
         <Radio.Group
           value={formValues.gender}
           onChange={(e) => handleChange("gender", e.target.value)}
@@ -280,49 +302,80 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
           <Radio value="Female">Female</Radio>
           <Radio value="Unisex">Unisex</Radio>
         </Radio.Group>
-        {errors.gender && <div style={{ color: 'red' }}>{errors.gender}</div>}
+        {errors.gender && <div className={styles.redFont}>{errors.gender}</div>}
       </div>
 
-      <div>
-        <label>Mobile Phone *</label>
-        <div style={{ display: "flex", gap: "5px" }}>
+      <div className={styles.fifthRow}>
+        {/* 
+        ===================================================================
+                            MOBILE PHONE INPUT FIELD
+        ===================================================================
+        */}
+        <label><span className={styles.redFont}>*</span> Mobile Phone:</label>
+        <div className={styles.phoneField}>
           <Select
-            value={formValues.countryCode}
+            className={styles.countryCode}
+            value={formValues.countryCode  || undefined}
+            placeholder="+XX"
             onChange={(value) => handleChange("countryCode", value)}
           >
             <Option value="+66">🇹🇭 +66</Option>
             <Option value="+1">🇺🇸 +1</Option>
             <Option value="+33">🇫🇷 +33</Option>
           </Select>
+          <span className={styles.dashsign}> - </span>
           <Input
             value={formValues.phoneNumber}
+            placeholder="Phone Number"
             maxLength={10}
             onChange={(e) => handleChange("phoneNumber", e.target.value)}
           />
         </div>
-        {errors.phoneNumber && <div style={{ color: 'red' }}>{errors.phoneNumber}</div>}
+        {errors.phoneNumber && <div className={styles.redFont}>{errors.phoneNumber}</div>}
       </div>
 
-      <div>
-        <label>Passport No (Optional)</label>
-        <Input
-          value={formValues.passportNo}
-          onChange={(e) => handleChange("passportNo", e.target.value)}
-        />
-
-        <label>Expected Salary *</label>
-        <Input
-          value={formValues.expectedSalary}
-          onChange={(e) => handleChange("expectedSalary", e.target.value)}
-        />
-        {errors.expectedSalary && <div style={{ color: 'red' }}>{errors.expectedSalary}</div>}
+      <div className={styles.sixthRow}>
+        {/* 
+        ===================================================================
+                            PASSPORT NO INPUT FIELD
+        ===================================================================
+        */}
+        <div className={styles.passport}>
+          <label>Passport No:</label>
+          <Input
+            value={formValues.passportNo}
+            placeholder="Passport Number"
+            onChange={(e) => handleChange("passportNo", e.target.value)}
+          />
+        </div>
       </div>
 
-      <div style={{ marginTop: 20, display: "flex", gap: "10px" }}>
-        <Button onClick={() => dispatch(resetFormData())}>Reset</Button>
-        <Button type="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
+      <div className={styles.seventhRow}>
+        {/* 
+        ===================================================================
+                          EXPECTED SALARY INPUT FIELD
+        ===================================================================
+        */}
+        <div className={styles.expectedSalary}>
+          <label><span className={styles.redFont}>*</span> Expected Salary:</label>
+          <Input
+            value={formValues.expectedSalary}
+            placeholder="Expected Salary"
+            onChange={(e) => handleChange("expectedSalary", e.target.value)}
+          />
+        </div>
+        {errors.expectedSalary && <div className={styles.redFont}>{errors.expectedSalary}</div>}
+        {/* 
+        ===================================================================
+                            RESET AND SUBMIT BUTTON
+        ===================================================================
+        */}
+        <div className={styles.buttonStyle}>
+          <Button onClick={() => dispatch(resetFormData())}>RESET</Button>
+          <Button onClick={handleSubmit}>
+            SUBMIT
+          </Button>
+        </div>
       </div>
     </div>
   );

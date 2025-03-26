@@ -29,7 +29,7 @@ const initialState: FormState = {
   nationality: "",
   citizenId: ["", "", "", "", ""],
   gender: "",
-  countryCode: "+66",
+  countryCode: "",
   phoneNumber: "",
   passportNo: "",
   expectedSalary: "",
