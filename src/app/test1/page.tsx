@@ -47,10 +47,10 @@ export default function Test1() {
     <div className={styles.page}>
       
       <h1 className={styles.title}>{t("Layout & Style")}</h1>
-      <div>
+      <div className={styles.topButton}>
         <LanguageSwitcher/>
         <Link href="/">
-            <Button className={styles.customButton}>
+            <Button className={styles.navButton}>
               {t("Home")}
             </Button>
           </Link>

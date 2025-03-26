@@ -172,10 +172,10 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   */
   return (
     <div className={styles.formStyle}>
-      <div>
+      <div className={styles.topButton}>
         <LanguageSwitcher/>
         <Link href="/">
-              <Button className={styles.customButton}>
+              <Button className={styles.navButton}>
                 {t("Home")}
               </Button>
         </Link>
