@@ -1,105 +1,175 @@
-// "use client";
+"use client";
 
-// import { useDispatch, useSelector } from "react-redux";
-// import { RootState } from "../redux/store";
-// import { deleteData, deleteSelected } from "../redux/formSlice";
-// import { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { Table, Button, message, Popconfirm } from 'antd';
+import { TablePaginationConfig } from 'antd/es/table';
+import { Key } from 'antd/es/table/interface';
+// import useRenderData from './useRenderData';
 
-// const TableComponent = ({ setEditingData }: any) => {
-//   const dispatch = useDispatch();
-//   const formData = useSelector((state: RootState) => state.form);
-//   const [page, setPage] = useState(1);
-//   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+interface TableData {
+  key: string; // This key should be citizenId
+  name: string;
+  gender: string;
+  mobilePhone: string;
+  nationality: string;
+}
 
-//   const itemsPerPage = 10;
-//   const totalPages = Math.ceil(formData.length / itemsPerPage);
+interface TableComponentProps {
+  setFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Add setFormSubmitted here
+  formSubmitted: boolean;
+}
 
-//   const handlePageChange = (newPage: number) => {
-//     setPage(newPage);
-//   };
 
-//   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.checked) {
-//       const allIds = formData.map((item) => item.id);
-//       setSelectedItems(allIds);
-//     } else {
-//       setSelectedItems([]);
-//     }
-//   };
+const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormSubmitted }) => {
 
-//   const handleSelectItem = (id: string) => {
-//     setSelectedItems((prevSelectedItems) =>
-//       prevSelectedItems.includes(id)
-//         ? prevSelectedItems.filter((item) => item !== id)
-//         : [...prevSelectedItems, id]
-//     );
-//   };
+  const [data, setData] = useState<TableData[]>([]); // State to hold table data
 
-//   const handleDelete = (id: string) => {
-//     dispatch(deleteData(id));
-//   };
+  // Fetch initial data from localStorage on component mount
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('submittedForms') || '[]');
+    setData(mapToTableData(storedData));
+    setFormSubmitted(false);
+  }, [formSubmitted]); // listen for changes to localStorage
 
-//   const handleDeleteSelected = () => {
-//     dispatch(deleteSelected(selectedItems));
-//     setSelectedItems([]);
-//   };
+  // Map the data to match the table format
+  const mapToTableData = (renderData: any[]) => {
+    return renderData.map((item) => ({
+      key: item.citizenId.join(""), // Assuming `citizenId` is an array
+      name: `${item.firstName} ${item.lastName}`,
+      gender: item.gender,
+      mobilePhone: item.phoneNumber,
+      nationality: item.nationality,
+    }));
+  };
 
-//   const startIndex = (page - 1) * itemsPerPage;
-//   const currentItems = formData.slice(startIndex, startIndex + itemsPerPage);
 
-//   return (
-//     <div>
-//       <div>
-//         <button onClick={handleDeleteSelected} disabled={selectedItems.length === 0}>
-//           Delete Selected
-//         </button>
-//         <table>
-//           <thead>
-//             <tr>
-//               <th>
-//                 <input type="checkbox" onChange={handleSelectAll} checked={selectedItems.length === formData.length} />
-//               </th>
-//               <th>Name</th>
-//               <th>Gender</th>
-//               <th>Phone</th>
-//               <th>Nationality</th>
-//               <th>Manage</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {currentItems.map((item) => (
-//               <tr key={item.id}>
-//                 <td>
-//                   <input
-//                     type="checkbox"
-//                     checked={selectedItems.includes(item.id)}
-//                     onChange={() => handleSelectItem(item.id)}
-//                   />
-//                 </td>
-//                 <td>{item.firstName} {item.lastName}</td>
-//                 <td>{item.gender}</td>
-//                 <td>{item.phone}</td>
-//                 <td>{item.nationality}</td>
-//                 <td>
-//                   <button onClick={() => setEditingData(item)}>Edit</button>
-//                   <button onClick={() => handleDelete(item.id)}>Delete</button>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//         <div>
-//           <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-//             Prev
-//           </button>
-//           <span>Page {page} of {totalPages}</span>
-//           <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>
-//             Next
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [pageSize, setPageSize] = useState(10); // Items per page state
 
-// export default TableComponent;
+  // Handle row selection change
+  const handleSelectChange = (newSelectedRowKeys: Key[], selectedRows: TableData[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    console.log("Selected Row Keys:", newSelectedRowKeys);
+    console.log("Selected Rows:", selectedRows);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: handleSelectChange, // Handle selection changes
+  };
+
+  const handleManage = (key: string) => {
+    message.info(`Manage action for row ${key}`);
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning('Please select at least one row to delete.');
+      return;
+    }
+
+    const remainingData = data.filter((item) => !selectedRowKeys.includes(item.key));
+    setData(remainingData);
+    setSelectedRowKeys([]); // Clear selected rows after delete
+    message.success('Selected rows have been deleted.');
+  };
+
+  const handleDeleteItem = (key: string) => {
+    const remainingData = data.filter((item) => item.key !== key);
+    setData(remainingData);
+    message.success(`Row ${key} has been deleted.`);
+  };
+
+  const handleChange = (pagination: any, filters: any, sorter: any) => {
+    if (sorter.order) {
+      const sortedData = [...data].sort((a, b) => {
+        if (sorter.order === 'ascend') {
+          return a[sorter.field as keyof TableData] > b[sorter.field as keyof TableData] ? 1 : -1;
+        } else {
+          return a[sorter.field as keyof TableData] < b[sorter.field as keyof TableData] ? 1 : -1;
+        }
+      });
+      setData(sortedData);
+    }
+  };
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      sorter: true,  // Enable sorting
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      sorter: true,  // Enable sorting
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Mobile Phone',
+      dataIndex: 'mobilePhone',
+      sorter: true,  // Enable sorting
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Nationality',
+      dataIndex: 'nationality',
+      sorter: true,  // Enable sorting
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Manage',
+      render: (_: any, record: TableData) => (
+        <span>
+          <Button onClick={() => handleManage(record.key)} type="primary" style={{ marginRight: 10 }}>
+            Edit
+          </Button>
+          <Popconfirm
+            title="Are you sure to delete this item?"
+            onConfirm={() => handleDeleteItem(record.key)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button>Delete</Button>
+          </Popconfirm>
+        </span>
+      ),
+      width: '20%',
+    },
+  ];
+
+  const paginationConfig: TablePaginationConfig = {
+    current: currentPage,
+    pageSize,
+    total: data.length,
+    onChange: (page: number) => setCurrentPage(page),
+    showSizeChanger: true,
+    onShowSizeChange: (current: number, size: number) => setPageSize(size),
+  };
+
+  return (
+    <div>
+      <Button
+        onClick={handleBulkDelete}
+        disabled={selectedRowKeys.length === 0}
+        style={{ marginBottom: '20px' }}
+      >
+        Delete Selected Items
+      </Button>
+
+      <Table
+        rowKey="key" // Unique key for rows
+        columns={columns}
+        dataSource={data}
+        pagination={paginationConfig}
+        onChange={handleChange} // Handle sorting and pagination changes
+        rowSelection={rowSelection}
+        sortDirections={['ascend', 'descend']} // Available sort directions
+      />
+    </div>
+  );
+};
+
+export default TableComponent;

@@ -9,7 +9,11 @@ import dayjs from 'dayjs';
 
 const { Option } = Select;
 
-const FormComponent = () => {
+interface FormComponentProps {
+  setFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted }) => {  
   const dispatch = useDispatch();
   const formValues = useSelector((state: RootState) => state.form);
   const errors = useSelector((state: RootState) => state.form.errors);
@@ -56,23 +60,22 @@ const FormComponent = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = () => {
-    // Validate the form first
     if (!validateForm()) {
-      return;
+      return; // If validation fails, don't submit
     }
 
-    // Get the form data to submit
     const formDataToSubmit = { ...formValues };
 
-    // Let's consider `citizenId` as the unique identifier (you can change it to passportNo if preferred)
-    const uniqueKey = formDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
+    const cleanedFormDataToSubmit = {
+      ...formDataToSubmit,
+      errors: {}, 
+    };
 
-    // Get previously submitted data from localStorage
+    const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
+
     const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
 
-    // Check if the unique key already exists in the stored data
     const isDuplicate = previousData.some(
       (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
     );
@@ -83,16 +86,20 @@ const FormComponent = () => {
     }
 
     // If not a duplicate, proceed with submission
-    previousData.push(formDataToSubmit); // Add new data to the stored data
+    previousData.push(cleanedFormDataToSubmit); // Add new data to the stored data
     localStorage.setItem("submittedForms", JSON.stringify(previousData));
 
-    console.log("Form data submitted:", formDataToSubmit);
+    setFormSubmitted(true);
+
+    console.log("Form data submitted:", cleanedFormDataToSubmit);
 
     // Reset form after successful submission
     dispatch(resetFormData());
 
-    message.success("Form submitted successfully!");
+    alert("Form submitted successfully!");
   };
+  
+
 
   const handleChange = (field: keyof FormState, value: any) => {
     // If the field is 'birthday', convert any Date object to an ISO string
@@ -102,7 +109,11 @@ const FormComponent = () => {
     // Dispatch the updated form data
     dispatch(updateFormData({ field, value }));
   };
-
+  /*
+  ========================================================================
+  JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART JSX PART
+  ========================================================================
+  */
   return (
     <div style={{ maxWidth: 500, margin: "0 auto" }}>
       <div>
