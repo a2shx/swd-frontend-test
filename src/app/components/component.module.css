@@ -76,8 +76,16 @@
     right: 10px;
   }
 
+  .deleteButton{
+    margin-top: 20px;
+  }
+
   .navButton{
     margin-top: 5px;
+  }
+
+  .flagImage{
+    width: 20px;
   }
   /* 
 ======================================================================

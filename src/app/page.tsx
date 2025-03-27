@@ -10,7 +10,9 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.topButton}>
         <LanguageSwitcher/>
+      </div>
       <main className={styles.main}>
         <div>
           <Link href="/test1">

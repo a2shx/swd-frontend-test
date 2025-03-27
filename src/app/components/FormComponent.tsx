@@ -6,10 +6,10 @@ import { updateFormData, resetFormData, setErrors } from "../redux/formSlice";
 import { RootState } from "../redux/store";
 import { Input, Select, DatePicker, Radio, Button, message } from "antd";
 import { FormState } from '../redux/formSlice';
-import dayjs from 'dayjs';
-import styles from "./component.module.css";
 import LanguageSwitcher from './SwitchLanguage';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import styles from "./component.module.css";
 import Link from 'next/link';
 
 const { Option } = Select;
@@ -31,7 +31,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   ========================================================================
   */
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: Record<string, string> = {};
 
     // Validate each field individually but stop on the first error
     if (!formValues.title || formValues.title === '') {
@@ -80,20 +80,19 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
       return; // If validation fails, don't submit
     }
   
-    const formDataToSubmit = { ...formValues };
+    const formDataToSubmit: FormState = { ...formValues };
     const cleanedFormDataToSubmit = {
       ...formDataToSubmit,
       errors: {},
     };
   
     const uniqueKey = cleanedFormDataToSubmit.citizenId.join(""); // Join the citizenId array if it's an array
-    const previousData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+    const previousData: FormState[] = JSON.parse(localStorage.getItem("submittedForms") || "[]");
   
     if (editingId) {
-      // Edit existing record
-      const updatedData = previousData.map((data: any) => {
+      const updatedData = previousData.map((data: FormState) => {
         if (data.citizenId.join("") === editingId) {
-          return { ...data, ...cleanedFormDataToSubmit }; // Update existing record
+          return { ...data, ...cleanedFormDataToSubmit };
         }
         return data;
       });
@@ -109,7 +108,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
     } else {
       // Check for duplicates when submitting a new record
       const isDuplicate = previousData.some(
-        (data: any) => data.citizenId.join("") === uniqueKey // Check based on unique key
+        (data: FormState) => data.citizenId.join("") === uniqueKey
       );
   
       if (isDuplicate) {
@@ -134,14 +133,16 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
               HANDLE CHANGE OF BIRTHDAY INPUT FIELD
   ========================================================================
   */
-  const handleChange = (field: keyof FormState, value: any) => {
-    // If the field is 'birthday', convert any Date object to an ISO string
-    if (field === 'birthday' && value instanceof Date) {
-      value = value.toISOString(); // Convert Date object to ISO string
-    }
-    // Dispatch the updated form data
-    dispatch(updateFormData({ field, value }));
-  };
+const handleChange = (field: keyof FormState, value: string | string[] | Date | null) => {
+  // Special handling for 'birthday' field to convert Date to string
+  if (field === 'birthday' && value instanceof Date) {
+    value = value.toISOString(); // Convert Date object to ISO string
+  }
+
+  // Handle the dispatch for the form data update
+  dispatch(updateFormData({ field, value }));
+};
+  
  /*
   ========================================================================
               HANDLE UPDATE DATA ON LOCAL STORAGE PART
@@ -150,7 +151,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
     React.useEffect(() => {
     if (editingId) {
       const savedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
-      const dataToEdit = savedData.find((item: any) => item.citizenId.join("") === editingId);
+      const dataToEdit = savedData.find((item: FormState) => item.citizenId.join("") === editingId);
       console.log('this from useEffect', editingId)
       console.log('dataToEdit:', dataToEdit); // Add this log to check if the data is correct
 
@@ -333,9 +334,15 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
             placeholder="+XX"
             onChange={(value) => handleChange("countryCode", value)}
           >
-            <Option value="+66">🇹🇭 +66</Option>
-            <Option value="+1">🇺🇸 +1</Option>
-            <Option value="+33">🇫🇷 +33</Option>
+            <Option value="+66">
+              <img src="/flags/th.png" alt="Thailand flag" className={styles.flagImage} /> +66
+            </Option>
+            <Option value="+1">
+              <img src="/flags/us.png" alt="US flag" className={styles.flagImage} /> +1
+            </Option>
+            <Option value="+33">
+              <img src="/flags/fr.png" alt="French flag" className={styles.flagImage} /> +33
+            </Option>
           </Select>
           <span className={styles.dashsign}> - </span>
           <Input

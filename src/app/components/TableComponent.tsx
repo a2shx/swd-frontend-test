@@ -5,14 +5,24 @@ import { Table, Button, message, Popconfirm } from 'antd';
 import { TablePaginationConfig } from 'antd/es/table';
 import { Key } from 'antd/es/table/interface';
 import { Checkbox } from "antd";
-import styles from "./component.module.css";
 import { useTranslation } from 'react-i18next';
+import { SorterResult, FilterValue } from "antd/es/table/interface";
+import styles from "./component.module.css";
 
 interface TableData {
   key: string; // This key should be citizenId
   name: string;
   gender: string;
   mobilePhone: string;
+  nationality: string;
+}
+
+interface StoredData {
+  citizenId: string[];
+  firstName: string;
+  lastName: string;
+  gender: string;
+  phoneNumber: string;
   nationality: string;
 }
 
@@ -29,6 +39,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]); // Selection state
   const [currentPage, setCurrentPage] = useState(1); // Current page state
   const [pageSize, setPageSize] = useState(10); // Items per page state
+  
   const { t } = useTranslation();
 
   /*
@@ -47,8 +58,8 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
                         MAP DATA TO TABLE FORMAT
   ========================================================================
   */
-  // Map the data to match the table format
-  const mapToTableData = (renderData: any[]) => {
+  // Map the data to match the table format (StoredData interface)
+  const mapToTableData = (renderData: StoredData[]): TableData[] => {
     return renderData.map((item) => ({
       key: item.citizenId.join(""), // Assuming `citizenId` is an array
       name: `${item.firstName} ${item.lastName}`,
@@ -97,9 +108,9 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
       message.warning("No records selected!");
       return;
     }
-      const storedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
-      const updatedData = storedData.filter(
-      (item: any) => !selectedRowKeys.includes(item.citizenId.join(""))
+    const storedData: StoredData[] = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+    const updatedData = storedData.filter(
+      (item) => !selectedRowKeys.includes(item.citizenId.join(""))
     );
     localStorage.setItem("submittedForms", JSON.stringify(updatedData));
     setData(mapToTableData(updatedData));
@@ -112,8 +123,8 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
   ========================================================================
   */
   const handleDeleteItem = (key: string) => {
-    const storedData = JSON.parse(localStorage.getItem("submittedForms") || "[]");
-    const updatedData = storedData.filter((item: any) => item.citizenId.join("") !== key);
+    const storedData: StoredData[] = JSON.parse(localStorage.getItem("submittedForms") || "[]");
+    const updatedData = storedData.filter((item) => item.citizenId.join("") !== key);
     localStorage.setItem("submittedForms", JSON.stringify(updatedData));
     setData(mapToTableData(updatedData));
     setFormSubmitted(true);
@@ -124,18 +135,22 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
                           PAGINATION'S SORTING HANDLE
   ========================================================================
   */
-  const handleChange = (pagination: any, filters: any, sorter: any) => {
-    if (sorter.order) {
+  const handleChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<TableData> | SorterResult<TableData>[], 
+  ) => {
+    if (!Array.isArray(sorter) && sorter.order && sorter.field) {
       const sortedData = [...data].sort((a, b) => {
-        if (sorter.order === 'ascend') {
-          return a[sorter.field as keyof TableData] > b[sorter.field as keyof TableData] ? 1 : -1;
-        } else {
-          return a[sorter.field as keyof TableData] < b[sorter.field as keyof TableData] ? 1 : -1;
-        }
+        const field = sorter.field as keyof TableData;
+        return sorter.order === "ascend"
+          ? String(a[field]).localeCompare(String(b[field]))
+          : String(b[field]).localeCompare(String(a[field]));
       });
       setData(sortedData);
     }
   };
+  
   /*
   ========================================================================
                               COLUMN ALIGNMENT PART
@@ -233,13 +248,19 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
         <span className={styles.selectAllLabel}>
         {t("Select All")}
         </span>
+      <Popconfirm
+            title="Are you sure to delete this item?"
+            onConfirm={() => handleBulkDelete()}
+            okText="Yes"
+            cancelText="No"
+          >
       <Button
-        onClick={handleBulkDelete}
         disabled={selectedRowKeys.length === 0}
-        style={{ marginTop: '20px' }}
+        className={styles.deleteButton}
       >
         {t("Delete")}
       </Button>
+      </Popconfirm>
       </div>
 {/* 
   ========================================================================

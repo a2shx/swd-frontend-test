@@ -4,7 +4,7 @@ export interface FormState {
   title: string;
   firstName: string;
   lastName: string;
-  birthday: any;
+  birthday: string | null; // Refined to 'string | null'
   nationality: string;
   citizenId: string[];
   gender: string;
@@ -13,13 +13,19 @@ export interface FormState {
   passportNo: string;
   expectedSalary: string;
   errors: Record<string, string>;
-
 }
 
+// Define a type that maps field keys to their corresponding value types
+type FieldValue<T extends keyof FormState> = 
+  T extends 'birthday' ? string | null : // Special handling for 'birthday'
+  T extends 'citizenId' ? string[] : // Special handling for 'citizenId'
+  FormState[T]; // Use the type of the field for all other cases
+
+// Payload interface for updating form data, with specific value types per field
 interface UpdateFormDataPayload {
-    field: keyof FormState; // Ensures `field` is one of the keys in FormState
-    value: any; // Value can be of any type
-  }
+  field: keyof FormState; // Ensures `field` is one of the keys in FormState
+  value: string | string[] | Record<string, string> | Date | null; // Allow Date for birthday
+}
 
 const initialState: FormState = {
   title: "",
@@ -33,39 +39,54 @@ const initialState: FormState = {
   phoneNumber: "",
   passportNo: "",
   expectedSalary: "",
-  errors: {}, // Initialize errors
+  errors: {}, // Initialize errors as an empty object
 };
 
 const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    // Use the new type for the PayloadAction
+    // Updates a specific form field with a value that matches the field's type
     updateFormData: (state, action: PayloadAction<UpdateFormDataPayload>) => {
-        const { field, value } = action.payload;
-  
-        if (field === 'birthday' && value instanceof Date) {
-          state.birthday = value.toISOString(); // Ensure it's stored as a string
-        } else {
+      const { field, value } = action.payload;
+
+      // Special handling for 'birthday' field to store as ISO string
+      if (field === 'birthday') {
+        if (value === null || typeof value === 'string') {
+          state.birthday = value; // Ensure it's stored as string or null
+        }
+      } else if (field === 'citizenId') {
+        if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
+          state.citizenId = value; // Ensure it's an array of strings
+        }
+      } else if (field === 'errors') {
+        if (typeof value === 'object' && value !== null) {
+          state.errors = value as Record<string, string>; // Ensure it's a valid object for errors
+        }
+      } else {
+        // For all other fields (string values), directly assign the value
+        if (typeof value === 'string') {
           state[field] = value;
         }
-      },
+      }
+    },
 
+    // Resets the form data to the initial state
     resetFormData: (state) => {
-      Object.assign(state, initialState);
+      Object.assign(state, initialState); // Revert to initial state
     },
 
+    // Sets validation errors for fields
     setErrors: (state, action: PayloadAction<Record<string, string>>) => {
-      state.errors = action.payload; // Update errors in the state
+      state.errors = action.payload; // Set form errors
     },
-  
   },
 });
 
 export const { 
-    updateFormData, 
-    resetFormData, 
-    setErrors, 
-  } = formSlice.actions;
+  updateFormData, 
+  resetFormData, 
+  setErrors 
+} = formSlice.actions;
 
 export default formSlice.reducer;
