@@ -181,49 +181,69 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
               </Button>
         </Link>
       </div>
+
+
+
       <div className={styles.firstRow}>
         {/* 
         ===================================================================
                             TITLE INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Title")}:</label>
-        <Select
-          value={formValues.title || undefined}  // Ensures placeholder is visible if no value is selected
-          placeholder={t("Title" )}     
-          onChange={(value) => handleChange("title", value)}
-          className={styles.title}
-        >
-          <Option value="Mr">{t("Mr.")}</Option>
-          <Option value="Mrs">{t("Mrs.")}</Option>
-          <Option value="Ms">{t("Ms.")}</Option>
-        </Select>
-        {errors.title && <div className={styles.redFont}>{errors.title}</div>}
+        <div className={styles.set1}>
+          <label><span className={styles.redFont}>*</span> {t("Title")}:</label>
+          <div className={styles.field}>
+            <Select
+              value={formValues.title || undefined}  // Ensures placeholder is visible if no value is selected
+              placeholder={t("Title" )}     
+              onChange={(value) => handleChange("title", value)}
+              className={styles.title}
+            >
+              <Option value="Mr">{t("Mr.")}</Option>
+              <Option value="Mrs">{t("Mrs.")}</Option>
+              <Option value="Ms">{t("Ms.")}</Option>
+            </Select>
+            {errors.title && <div className={styles.error}>{errors.title}</div>}
+          </div>
+        </div>
         {/* 
         ===================================================================
                             FIRST NAME INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Firstname")}:</label>
-        <Input
-          value={formValues.firstName}
-          placeholder={t("First Name")}
-          onChange={(e) => handleChange("firstName", e.target.value)}
-        />
-        {errors.firstName && <div className={styles.redFont}>{errors.firstName}</div>}
+        <div className={styles.set2}>
+          <label><span className={styles.redFont}>*</span> {t("Firstname")}:</label>
+          <div className={styles.field}>
+            <Input
+              value={formValues.firstName}
+              placeholder={t("First Name")}
+              onChange={(e) => handleChange("firstName", e.target.value)}
+              className={styles.firstname}
+            />
+            {errors.firstName && <div className={styles.error}>{errors.firstName}</div>}
+          </div>
+        </div>
         {/* 
         ===================================================================
                             LAST NAME INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Lastname")}:</label>
-        <Input
-          value={formValues.lastName}
-          placeholder={t("Last Name")}
-          onChange={(e) => handleChange("lastName", e.target.value)}
-        />
-        {errors.lastName && <div className={styles.redFont}>{errors.lastName}</div>}
-      </div>
+        <div className={styles.set3}>
+          <label><span className={styles.redFont}>*</span> {t("Lastname")}:</label>
+          <div className={styles.field}>
+          <Input
+            value={formValues.lastName}
+            placeholder={t("Last Name")}
+            onChange={(e) => handleChange("lastName", e.target.value)}
+            className={styles.lastname}
+          />
+          {errors.lastName && <div className={styles.error}>{errors.lastName}</div>}
+          </div>
+        </div>
+        
+        </div>
+
+
 
       <div className={styles.secondRow}>
         {/* 
@@ -231,36 +251,47 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
                             BIRTHDAY INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Birthday")}:</label>
-        <DatePicker
-          value={formValues.birthday ? dayjs(formValues.birthday) : null} // Convert ISO string to dayjs object for display
-          onChange={(date) => {
-            if (date) {
-              handleChange('birthday', date.toISOString()); // Convert Date (dayjs) to ISO string on change
-            }
-          }}
-          format="MM/DD/YY"
-          placeholder={t("mm/dd/yy")} // Using translation for placeholder
-        />
-        {errors.birthday && <div className={styles.redFont}>{errors.birthday}</div>}
+        <div className={styles.set4}>
+          <label><span className={styles.redFont}>*</span> {t("Birthday")}:</label>
+          <div className={styles.field}>
+            <DatePicker
+              className={styles.birthday}
+              value={formValues.birthday ? dayjs(formValues.birthday) : null} // Convert ISO string to dayjs object for display
+              onChange={(date) => {
+                if (date) {
+                  handleChange('birthday', date.toISOString()); // Convert Date (dayjs) to ISO string on change
+                }
+              }}
+              format="MM/DD/YY"
+              placeholder={t("mm/dd/yy")} // Using translation for placeholder
+            />
+            {errors.birthday && <div className={styles.error}>{errors.birthday}</div>}
+            </div>
+        </div>
         {/* 
         ===================================================================
                             NATIONALITY INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Nationality")}:</label>
-        <Select
-          value={formValues.nationality  || undefined}
-          placeholder={t("Please Select")}
-          onChange={(value) => handleChange("nationality", value)}
-          className={styles.nationality}
-        >
-          <Option value="Thai">{t("Thai")}</Option>
-          <Option value="French">{t("French")}</Option>
-          <Option value="American">{t("American")}</Option>
-        </Select>
-        {errors.nationality && <div className={styles.redFont}>{errors.nationality}</div>}
+        <div className={styles.set5}>
+          <label><span className={styles.redFont}>*</span> {t("Nationality")}:</label>
+          <div className={styles.field}>
+          <Select
+            value={formValues.nationality  || undefined}
+            placeholder={t("Please Select")}
+            onChange={(value) => handleChange("nationality", value)}
+            className={styles.nationality}
+          >
+            <Option value="Thai">{t("Thai")}</Option>
+            <Option value="French">{t("French")}</Option>
+            <Option value="American">{t("American")}</Option>
+          </Select>
+          {errors.nationality && <div className={styles.error}>{errors.nationality}</div>}
+          </div>
+        </div>
       </div>
+
+
 
       <div className={styles.thirdRow}>
         {/* 
@@ -268,38 +299,42 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
                             CITIZEN ID INPUT FIELD
         ===================================================================
         */}
-        <label>{t("Citizen ID")}:</label>
-        <div style={{ display: "flex", gap: "5px" }}>
-          {formValues.citizenId.map((_, index) => (
-             <React.Fragment key={index}>
-              <Input
-                value={formValues.citizenId[index]}
-                maxLength={
-                  index === 0 ? 1 :
-                  index === 1 ? 4 :
-                  index === 2 ? 5 :
-                  index === 3 ? 2 : 1
-                }
-                placeholder={["X", "XXXX", "XXXXX", "XX", "X"][index]}
-                onChange={(e) => {
-                  const newCitizenId = [...formValues.citizenId];
-                  newCitizenId[index] = e.target.value;
-                  handleChange("citizenId", newCitizenId);
-                }}
-                style={{
-                  width: index === 0 ? "10%" :
-                          index === 1 ? "20%" :
-                          index === 2 ? "20%" :
-                          index === 3 ? "15%" : "10%"
-                }}
-              />
-              {index < formValues.citizenId.length - 1 && (
-                <span className={styles.dashsign}> - </span>
-              )}
-            </React.Fragment>
-          ))}
+      <div className={styles.set6}>
+        <label><span className={styles.redFont}>*</span> {t("Citizen ID")}:</label>
+          <div className={styles.field}>
+            <div style={{ display: "flex", gap: "5px" }}>
+              {formValues.citizenId.map((_, index) => (
+                <React.Fragment key={index}>
+                  <Input
+                    value={formValues.citizenId[index]}
+                    maxLength={
+                      index === 0 ? 1 :
+                      index === 1 ? 4 :
+                      index === 2 ? 5 :
+                      index === 3 ? 2 : 1
+                    }
+                    placeholder={["X", "XXXX", "XXXXX", "XX", "X"][index]}
+                    onChange={(e) => {
+                      const newCitizenId = [...formValues.citizenId];
+                      newCitizenId[index] = e.target.value;
+                      handleChange("citizenId", newCitizenId);
+                    }}
+                    style={{
+                      width: index === 0 ? "10%" :
+                              index === 1 ? "20%" :
+                              index === 2 ? "20%" :
+                              index === 3 ? "15%" : "10%"
+                    }}
+                  />
+                  {index < formValues.citizenId.length - 1 && (
+                    <span className={styles.dashsign}> - </span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+            {errors.citizenId && <div className={styles.redFont}>{errors.citizenId}</div>}
+          </div>
         </div>
-        {errors.citizenId && <div className={styles.redFont}>{errors.citizenId}</div>}
       </div>
 
       <div className={styles.fourthRow}>
@@ -308,52 +343,63 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
                             GENDER INPUT FIELD
         ===================================================================
         */}
-        <label><span className={styles.redFont}>*</span> {t("Gender")}:</label>
-        <Radio.Group
-          value={formValues.gender}
-          onChange={(e) => handleChange("gender", e.target.value)}
-        >
-          <Radio value="Male">{t("Male")}</Radio>
-          <Radio value="Female">{t("Female")}</Radio>
-          <Radio value="Unisex">{t("Unisex")}</Radio>
-        </Radio.Group>
-        {errors.gender && <div className={styles.redFont}>{errors.gender}</div>}
+      <div className={styles.set7}>
+          <label><span className={styles.redFont}>*</span> {t("Gender")}:</label>
+          <div className={styles.field}>
+          <Radio.Group
+            value={formValues.gender}
+            onChange={(e) => handleChange("gender", e.target.value)}
+          >
+            <Radio value="Male">{t("Male")}</Radio>
+            <Radio value="Female">{t("Female")}</Radio>
+            <Radio value="Unisex">{t("Unisex")}</Radio>
+          </Radio.Group>
+          {errors.gender && <div className={styles.error}>{errors.gender}</div>}
+        </div>
       </div>
+    </div>
 
-      <div className={styles.fifthRow}>
+
+    <div className={styles.fifthRow}>
         {/* 
         ===================================================================
                             MOBILE PHONE INPUT FIELD
         ===================================================================
         */}
+      <div className={styles.set8}>
         <label><span className={styles.redFont}>*</span> {t("Mobile Phone")}:</label>
-        <div className={styles.phoneField}>
-          <Select
-            className={styles.countryCode}
-            value={formValues.countryCode  || undefined}
-            placeholder="+XX"
-            onChange={(value) => handleChange("countryCode", value)}
-          >
-            <Option value="+66">
-              <img src="/flags/th.png" alt="Thailand flag" className={styles.flagImage} /> +66
-            </Option>
-            <Option value="+1">
-              <img src="/flags/us.png" alt="US flag" className={styles.flagImage} /> +1
-            </Option>
-            <Option value="+33">
-              <img src="/flags/fr.png" alt="French flag" className={styles.flagImage} /> +33
-            </Option>
-          </Select>
-          <span className={styles.dashsign}> - </span>
-          <Input
-            value={formValues.phoneNumber}
-            placeholder={t("Phone Number")}
-            maxLength={10}
-            onChange={(e) => handleChange("phoneNumber", e.target.value)}
-          />
+          <div className={styles.field}>
+          <div className={styles.phoneField}>
+            <Select
+              className={styles.countryCode}
+              value={formValues.countryCode  || undefined}
+              placeholder="+XX"
+              onChange={(value) => handleChange("countryCode", value)}
+            >
+              <Option value="+66">
+                <img src="/flags/th.png" alt="Thailand flag" className={styles.flagImage} /> +66
+              </Option>
+              <Option value="+1">
+                <img src="/flags/us.png" alt="US flag" className={styles.flagImage} /> +1
+              </Option>
+              <Option value="+33">
+                <img src="/flags/fr.png" alt="French flag" className={styles.flagImage} /> +33
+              </Option>
+            </Select>
+            <span className={styles.dashsign}> - </span>
+            <Input
+              value={formValues.phoneNumber}
+              placeholder={t("Phone Number")}
+              maxLength={10}
+              onChange={(e) => handleChange("phoneNumber", e.target.value)}
+            />
+          </div>
+          {errors.phoneNumber && <div className={styles.error}>{errors.phoneNumber}</div>}
+          </div>
         </div>
-        {errors.phoneNumber && <div className={styles.redFont}>{errors.phoneNumber}</div>}
       </div>
+
+
 
       <div className={styles.sixthRow}>
         {/* 
@@ -361,9 +407,11 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
                             PASSPORT NO INPUT FIELD
         ===================================================================
         */}
-        <div className={styles.passport}>
+      
+        <div className={styles.set9}>
           <label>{t("Passport No")}:</label>
           <Input
+            className={styles.passport}
             value={formValues.passportNo}
             placeholder={t("Passport Number")}
             onChange={(e) => handleChange("passportNo", e.target.value)}
@@ -371,21 +419,26 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
         </div>
       </div>
 
+
+
       <div className={styles.seventhRow}>
         {/* 
         ===================================================================
                           EXPECTED SALARY INPUT FIELD
         ===================================================================
         */}
-        <div className={styles.expectedSalary}>
-          <label><span className={styles.redFont}>*</span> {t("Expected Salary")}:</label>
-          <Input
-            value={formValues.expectedSalary}
-            placeholder={t("Expected Salary")}
-            onChange={(e) => handleChange("expectedSalary", e.target.value)}
-          />
+        <div className={styles.set10}>
+            <label><span className={styles.redFont}>*</span> {t("Expected Salary")}:</label>
+            <div className={styles.field}>
+            <Input
+              className={styles.salary}
+              value={formValues.expectedSalary}
+              placeholder={t("Expected Salary")}
+              onChange={(e) => handleChange("expectedSalary", e.target.value)}
+            />
+          {errors.expectedSalary && <div className={styles.error}>{errors.expectedSalary}</div>}
+          </div>
         </div>
-        {errors.expectedSalary && <div className={styles.redFont}>{errors.expectedSalary}</div>}
         {/* 
         ===================================================================
                             RESET AND SUBMIT BUTTON

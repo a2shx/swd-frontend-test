@@ -3,90 +3,145 @@
                             FORM COMPONENT STYLES
 ======================================================================
 */
-.firstRow, .secondRow, .thirdRow, .fourthRow, .fifthRow, .sixthRow, .seventhRow {
+.topButton{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 10px;
+  right: 10px;
+}
+
+.navButton{
+  margin-top: 5px;
+}
+
+.formStyle{
+  width: 60vw;
+  min-width: 800px;
+  padding: 10px 15px;
+  border: 2px solid rgb(109, 109, 109);
+  border-radius: 10px;
+}
+
+.firstRow, .secondRow, .thirdRow, .fourthRow, .fifthRow, .sixthRow, .seventhRow{
     display: flex;
     gap: 10px;
-    align-items: center; /* Vertically aligns items */
+    align-items: center;
     margin-bottom: 30px;
+    width: 100%; 
+    box-sizing: border-box;
   }
 
   .firstRow label, .secondRow label, .thirdRow label, .fourthRow label, .fifthRow label, .sixthRow label, .seventhRow label {
-    margin-right: 5px; /* Add spacing between label and input */
-    white-space: nowrap; /* Prevent line break in label */
+    margin-right: 5px;
+    white-space: nowrap; 
     color: black;
+  }
+
+  .field{
+    flex-grow: 1;
+  }
+  .set1, .set2, .set3, .set4, .set5, .set6, .set7, .set8, .set9, .set10 {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  .set1{
+    width: 15%;
+  }
+
+  .set2{
+    width: 40%;
+  }
+
+  .set3{
+    width: 40%;
+  }
+  
+  .set4{
+    width: 15%;
+  }
+
+  .set5{
+    width: 40%;
+  }
+
+  .set8{
+    width: 50%;
+  }
+
+  .set9{
+    width: 40%;
+  }
+
+  .set10{
+    width: 40%;
+  }
+
+  .error{
+    color: red;
+    position:absolute;
+  }
+
+  .countryCode{
+    width: 40%;
   }
 
   .redFont{
     color: red;
   }
-  .selectAllLabel{
-    color: black;
-    margin: 0px 10px;
-  }
+
   .dashsign{
     align-self: center;
     color: black;
     margin:0px 10px;
   }
 
-  .formStyle{
-    padding: 10px 15px;
-    border: 2px solid rgb(109, 109, 109);
-    border-radius: 10px;
-  }
-  
-  .title{
-    width: 40%;
-  }
-  .phoneField{
-    display: flex;
-    width: 50%;
+  .title {
+    width: 100%;
   }
 
-  .countryCode{
-    width: 50%;
+  .firstname{
+    width: 100%;
+  }
+  .lastname{
+    width: 100%;
+  }
+
+  .birthday{
+    width: 100%;
+  }
+
+  .nationality{
+    width: 100%;
   }
 
   .passport{
+    width: 100%;
+  }
+
+  .salary{
+    width: 100%;
+  }
+
+  .phoneField{
     display: flex;
-    align-items: center;
-    width: 50%;
+    width: 100%;
+  }
+
+  .flagImage{
+    width: 20px;
   }
 
   .buttonStyle{
     display: flex;
   }
   .buttonStyle button{
-    margin-left: 60%;
-  }
-  .expectedSalary{
-    display: flex;
-    align-items: center;
-    width: 50%;
-  }
-  .nationality{
-    width: 30%;
-  }
-  .topButton{
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    top: 10px;
-    right: 10px;
+    margin-left: 70%;
   }
 
-  .deleteButton{
-    margin-top: 20px;
-  }
-
-  .navButton{
-    margin-top: 5px;
-  }
-
-  .flagImage{
-    width: 20px;
-  }
   /* 
 ======================================================================
                             TABLE COMPONENT STYLES
@@ -97,4 +152,12 @@
 }
 .manageStyle {
   margin-left: 10px;
+}
+.selectAllLabel{
+  color: black;
+  margin: 0px 10px;
+}
+
+.deleteButton{
+  margin-top: 20px;
 }
