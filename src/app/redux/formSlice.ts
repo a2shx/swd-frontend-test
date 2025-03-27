@@ -15,12 +15,6 @@ export interface FormState {
   errors: Record<string, string>;
 }
 
-// Define a type that maps field keys to their corresponding value types
-type FieldValue<T extends keyof FormState> = 
-  T extends 'birthday' ? string | null : // Special handling for 'birthday'
-  T extends 'citizenId' ? string[] : // Special handling for 'citizenId'
-  FormState[T]; // Use the type of the field for all other cases
-
 // Payload interface for updating form data, with specific value types per field
 interface UpdateFormDataPayload {
   field: keyof FormState; // Ensures `field` is one of the keys in FormState

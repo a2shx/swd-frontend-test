@@ -104,7 +104,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
       dispatch(resetFormData());
       setFormSubmitted(true);
       setEditingId(null); // Reset editingId to null
-      alert("Changes saved successfully!");
+      alert("Save Success");
     } else {
       // Check for duplicates when submitting a new record
       const isDuplicate = previousData.some(
@@ -125,7 +125,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
   
       // Reset form after successful submission
       dispatch(resetFormData());
-      alert("Form submitted successfully!");
+      alert("Save Success");
     }
   };
  /*

@@ -115,7 +115,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     localStorage.setItem("submittedForms", JSON.stringify(updatedData));
     setData(mapToTableData(updatedData));
     setSelectedRowKeys([]); // Clear selection after deletion
-    message.success("Selected records deleted successfully!");
+    alert("Delete Success");
   };
   /*
   ========================================================================
@@ -128,7 +128,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     localStorage.setItem("submittedForms", JSON.stringify(updatedData));
     setData(mapToTableData(updatedData));
     setFormSubmitted(true);
-    message.success("Record deleted successfully!");
+    alert("Delete Success");
   };
   /*
   ========================================================================
