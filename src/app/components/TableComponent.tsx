@@ -189,7 +189,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ formSubmitted, setFormS
     },
     {
       title: t('Manage'),
-      render: (_: any, record: TableData) => (
+      render: (_: void, record: TableData) => (
         <span>
           <a onClick={() => handleManage(record.key)}>{t("Edit")}</a>
           

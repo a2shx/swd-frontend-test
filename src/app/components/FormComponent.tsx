@@ -194,7 +194,7 @@ const handleChange = (field: keyof FormState, value: string | string[] | Date | 
           <label><span className={styles.redFont}>*</span> {t("Title")}:</label>
           <div className={styles.field}>
             <Select
-              value={formValues.title || undefined}  // Ensures placeholder is visible if no value is selected
+              value={formValues.title === "" ? undefined : formValues.title}  // Ensures placeholder is visible if no value is selected
               placeholder={t("Title" )}     
               onChange={(value) => handleChange("title", value)}
               className={styles.title}
