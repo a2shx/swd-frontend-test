@@ -35,35 +35,35 @@ const FormComponent: React.FC<FormComponentProps> = ({ setFormSubmitted, editing
 
     // Validate each field individually but stop on the first error
     if (!formValues.title || formValues.title === '') {
-      newErrors.title = "Title is required!";
+      newErrors.title = t("Title is required!");
     } if (!formValues.firstName || formValues.firstName === '') {
-      newErrors.firstName = "First Name is required!";
-    } if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
-      newErrors.firstName = "Please fill the real first name!";
+      newErrors.firstName = t("First Name is required!");
+    } else if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.firstName)) {
+      newErrors.firstName = t("Firstname can't contain number or special letter!");
     } if (!formValues.lastName || formValues.lastName === '') {
-      newErrors.lastName = "Last Name is required!";
-    } if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
-      newErrors.lastName = "Please fill the real last name!";
+      newErrors.lastName = t("Last Name is required!");
+    } else if (!/^[A-Za-z\u0E00-\u0E7F\s]+$/.test(formValues.lastName)) {
+      newErrors.lastName = t("Lastname can't contain number or special letter!");
     } if (!formValues.birthday) {
-      newErrors.birthday = "Birthday is required!";
+      newErrors.birthday = t("Birthday is required!");
     } if (!formValues.nationality || formValues.nationality === '') {
-      newErrors.nationality = "Nationality is required!";
+      newErrors.nationality = t("Nationality is required!");
     } if (!formValues.gender || formValues.gender === '') {
-      newErrors.gender = "Gender is required!";
+      newErrors.gender = t("Gender is required!");
     } if (!formValues.phoneNumber || formValues.phoneNumber === '') {
-      newErrors.phoneNumber = "Phone Number is required!";
+      newErrors.phoneNumber = t("Phone Number is required!");
     } if (!/^\d+$/.test(formValues.phoneNumber)) {
-      newErrors.phoneNumber = "Phone Number must be a valid number!";
+      newErrors.phoneNumber = t("Phone Number must be a valid number!");
     } if (!formValues.expectedSalary || formValues.expectedSalary === '') {
-      newErrors.expectedSalary = "Expected Salary is required!";
+      newErrors.expectedSalary = t("Expected Salary is required!");
     }
 
     // Citizen ID validation (must be exactly 13 digits and a number)
     const citizenId = formValues.citizenId.join("");
     if (citizenId && citizenId.length !== 13) {
-      newErrors.citizenId = "Citizen ID must be exactly 13 digits!";
+      newErrors.citizenId = t("Citizen ID must be exactly 13 digits!");
     } else if (!/^\d+$/.test(citizenId)) {
-      newErrors.citizenId = "Citizen ID must be a valid number!";
+      newErrors.citizenId = t("Citizen ID must be a valid number!");
     }
 
     dispatch(setErrors(newErrors)); // Dispatch errors to Redux
