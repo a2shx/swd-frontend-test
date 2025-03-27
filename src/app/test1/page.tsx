@@ -59,7 +59,7 @@ export default function Test1() {
         <Col>
           <Button className={styles.controlButton} onClick={shiftLeft}>
             <div className={styles.triangleLeft}></div>
-            <span className={styles.spanLabel}>Move Shape</span>
+            <span className={styles.spanLabel}>{t("Move Shape")}</span>
           </Button>
         </Col>
         <Col>
